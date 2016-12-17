@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -7,40 +6,41 @@ public class GameManager : MonoBehaviour
     // make game manager public static so can access this from other scripts
     public static GameManager gm;
 
-    // public variables
-    public int score = 0;
-
-    public bool canBeatLevel = false;
     public int beatLevelScore = 0;
 
-    public float startTime = 5.0f;
+    public bool canBeatLevel = false;
+
+    private float currentTime;
+
+    public bool gameIsOver;
+
+    public GameObject gameOverScoreOutline;
 
     public Text mainScoreDisplay;
     public Text mainTimerDisplay;
 
-    public GameObject gameOverScoreOutline;
-
     public AudioSource musicAudioSource;
-
-    public bool gameIsOver = false;
-
-    public GameObject playAgainButtons;
-    public string playAgainLevelToLoad;
 
     public GameObject nextLevelButtons;
     public string nextLevelToLoad;
 
-    private float currentTime;
+    public GameObject playAgainButtons;
+    public string playAgainLevelToLoad;
+
+    // public variables
+    public int score;
+
+    public float startTime = 5.0f;
 
     // setup the game
-    void Start()
+    private void Start()
     {
         // set the current time to the startTime specified
         currentTime = startTime;
 
         // get a reference to the GameManager component for use by other scripts
         if (gm == null)
-            gm = this.gameObject.GetComponent<GameManager>();
+            gm = gameObject.GetComponent<GameManager>();
 
         // init scoreboard to 0
         mainScoreDisplay.text = "0";
@@ -59,27 +59,28 @@ public class GameManager : MonoBehaviour
     }
 
     // this is the main game event loop
-    void Update()
+    private void Update()
     {
         if (!gameIsOver)
-        {
             if (canBeatLevel && (score >= beatLevelScore))
-            {  // check to see if beat game
+            {
+                // check to see if beat game
                 BeatLevel();
             }
             else if (currentTime < 0)
-            { // check to see if timer has run out
+            {
+                // check to see if timer has run out
                 EndGame();
             }
             else
-            { // game playing state, so update the timer
+            {
+                // game playing state, so update the timer
                 currentTime -= Time.deltaTime;
                 mainTimerDisplay.text = currentTime.ToString("0.00");
             }
-        }
     }
 
-    void EndGame()
+    private void EndGame()
     {
         // game is over
         gameIsOver = true;
@@ -100,7 +101,7 @@ public class GameManager : MonoBehaviour
             musicAudioSource.pitch = 0.5f; // slow down the music
     }
 
-    void BeatLevel()
+    private void BeatLevel()
     {
         // game is over
         gameIsOver = true;
