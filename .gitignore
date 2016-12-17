@@ -31,3 +31,5 @@ sysinfo.txt
 *.unitypackage
 *.exe
 *.pdb
+WebGL/
+*~
