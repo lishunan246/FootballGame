@@ -2,13 +2,13 @@ Mono path[0] = 'D:/Bouncy Shooter/bs_Data/Managed'
 Mono path[1] = 'D:/Bouncy Shooter/bs_Data/Mono'
 Mono config path = 'D:/Bouncy Shooter/bs_Data/Mono/etc'
 PlayerConnection initialized from D:/Bouncy Shooter/bs_Data (debug = 0)
-PlayerConnection initialized network socket : 0.0.0.0 55475
-Multi-casting "[IP] 192.168.72.1 [Port] 55475 [Flags] 3 [Guid] 3697039841 [EditorId] 1515854965 [Version] 1048832 [Id] WindowsPlayer(李书楠的Lenovo) [Debug] 1" to [225.0.0.222:54997]...
-Waiting for connection from host on [0.0.0.0:55475]...
-PlayerConnection accepted from [192.168.1.139] handle:0x320
-Started listening to [0.0.0.0:55475]
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56841
-PlayerConnection already initialized - listening to [0.0.0.0:55475]
+PlayerConnection initialized network socket : 0.0.0.0 55495
+Multi-casting "[IP] 192.168.72.1 [Port] 55495 [Flags] 3 [Guid] 321462694 [EditorId] 1515854965 [Version] 1048832 [Id] WindowsPlayer(李书楠的Lenovo) [Debug] 1" to [225.0.0.222:54997]...
+Waiting for connection from host on [0.0.0.0:55495]...
+Timed out. Continuing without host connection.
+Started listening to [0.0.0.0:55495]
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56694
+PlayerConnection already initialized - listening to [0.0.0.0:55495]
 Initialize engine version: 5.5.0f3 (38b4efef76f0)
 GfxDevice: creating device client; threaded=1
 Direct3D:
@@ -32,10 +32,9 @@ Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.PlaymodeTestsRu
 Loading D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
 Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.228 seconds
+- Completed reload, in  0.024 seconds
 Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3840x1208 at -1920,0
 <RI> Initializing input.
 <RI> Input initialized.
-Waiting for finish
