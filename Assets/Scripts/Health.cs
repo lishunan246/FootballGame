@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Health : MonoBehaviour
 {
@@ -21,7 +21,7 @@ public class Health : MonoBehaviour
     private Quaternion respawnRotation;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         // store initial position as respawn location
         respawnPosition = transform.position;
@@ -34,7 +34,7 @@ public class Health : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (healthPoints <= 0)
         {               // if the object is 'dead'
