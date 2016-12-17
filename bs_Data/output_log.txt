@@ -1,0 +1,38 @@
+Mono path[0] = 'D:/Bouncy Shooter/bs_Data/Managed'
+Mono path[1] = 'D:/Bouncy Shooter/bs_Data/Mono'
+Mono config path = 'D:/Bouncy Shooter/bs_Data/Mono/etc'
+PlayerConnection initialized from D:/Bouncy Shooter/bs_Data (debug = 0)
+PlayerConnection initialized network socket : 0.0.0.0 55156
+Multi-casting "[IP] 192.168.72.1 [Port] 55156 [Flags] 3 [Guid] 3333069547 [EditorId] 3899470131 [Version] 1048832 [Id] WindowsPlayer(ÀîÊééªµÄLenovo) [Debug] 1" to [225.0.0.222:54997]...
+Waiting for connection from host on [192.168.72.1:55156]...
+PlayerConnection accepted from [192.168.1.139] handle:0x338
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56547
+PlayerConnection already initialized - listening to [192.168.72.1:55156]
+Initialize engine version: 5.4.2f2 (b7e030c65c9b)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 960M (ID=0x139b)
+    Vendor:   NVIDIA
+    VRAM:     4064 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
+Loading D:\Bouncy Shooter\bs_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
+- Completed reload, in  0.123 seconds
+Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Bouncy Shooter\bs_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 3840x1208 at -1920,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.387568 ms
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 3ebc -> priority: 1 
+  Thread -> id: 13f8 -> priority: 1 
+Waiting for finish
