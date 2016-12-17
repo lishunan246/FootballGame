@@ -4,11 +4,11 @@
 
 public class Chaser : MonoBehaviour
 {
-    public float interval = 2.0f;
-    public float minDist = 1f;
-    public Rigidbody rb;
+    //public float interval = 2.0f;
+    public float minDist = 20f;
+    //public Rigidbody rb;
 
-    public float force = 20.0f;
+    public float speed = 20.0f;
     public Transform target;
 
     private float time;
@@ -17,7 +17,7 @@ public class Chaser : MonoBehaviour
     private void Start()
     {
         time = 0;
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
         // if no target specified, assume the player
         if (target == null)
             if (GameObject.FindWithTag("Player") != null)
@@ -37,15 +37,15 @@ public class Chaser : MonoBehaviour
         var distance = Vector3.Distance(transform.position, target.position);
 
         //so long as the chaser is farther away than the minimum distance, move towards it at rate speed.
-        if (time > interval)
-        {
-            if (distance > minDist)
-                rb.AddForce(transform.forward*force);
-
-            time = 0;
-        }
-        time += Time.deltaTime;
-        //transform.position += transform.forward * speed * Time.deltaTime;
+//        if (time > interval)
+//        {
+//            if (distance > minDist)
+//                rb.AddForce(transform.forward*force);
+//
+//            time = 0;
+//        }
+//        time += Time.deltaTime;
+        transform.position += transform.forward * speed * Time.deltaTime;
     }
 
     // Set the target of the chaser

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Shooter : MonoBehaviour
+public class Shoot : MonoBehaviour
 {
     public float power = 10.0f;
 
@@ -10,11 +10,18 @@ public class Shooter : MonoBehaviour
     // Reference to AudioClip to play
     public AudioClip shootSFX;
 
+    public float Interval = 3.0f;
+
+    public GameObject Target;
+
+    private float _time;
+
     // Update is called once per frame
     private void Update()
     {
         // Detect if fire button is pressed
-        if (Input.GetButtonDown("Fire1"))
+        if (_time > Interval)
+        {
             if (projectile)
             {
                 // Instantiante projectile at the camera + 1 meter forward with camera rotation
@@ -25,7 +32,7 @@ public class Shooter : MonoBehaviour
                 if (!newProjectile.GetComponent<Rigidbody>())
                     newProjectile.AddComponent<Rigidbody>();
                 // Apply force to the newProjectile's Rigidbody component if it has one
-                newProjectile.GetComponent<Rigidbody>().AddForce(transform.forward*power, ForceMode.VelocityChange);
+                newProjectile.GetComponent<Rigidbody>().AddForce(transform.forward * power, ForceMode.VelocityChange);
 
                 // play sound effect if set
                 if (shootSFX)
@@ -34,5 +41,8 @@ public class Shooter : MonoBehaviour
                     else
                         AudioSource.PlayClipAtPoint(shootSFX, newProjectile.transform.position);
             }
+            _time = 0;
+        }
+        _time += Time.deltaTime;
     }
 }
