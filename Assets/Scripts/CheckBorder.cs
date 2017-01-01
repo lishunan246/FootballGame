@@ -16,7 +16,7 @@ public class CheckBorder : MonoBehaviour
 	void Update ()
 	{
 	    var t = gameObject.transform.position;
-	    if (Math.Abs(t[0]) > MaxX || Math.Abs(t[1]) > MaxY)
+	    if (Math.Abs(t[0]) > MaxX || Math.Abs(t[2]) > MaxY)
 	    {
 	        GameManager.gm.OffBorder = true;
 	    }
