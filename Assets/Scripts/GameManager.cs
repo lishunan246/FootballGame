@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
 
     public int beatLevelScore = 0;
 
+    public int score1 = 0;
+    public int score2 = 0;
+
     public bool canBeatLevel = false;
 
     private float currentTime;
