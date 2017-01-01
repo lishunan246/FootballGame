@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
             gm = gameObject.GetComponent<GameManager>();
 
         // init scoreboard to 0
-        mainScoreDisplay.text = "0:0";
+        mainScoreDisplay.text = "ready";
 
         // inactivate the gameOverScoreOutline gameObject, if it is set
         if (gameOverScoreOutline)
@@ -85,6 +85,7 @@ public class GameManager : MonoBehaviour
                 // game playing state, so update the timer
                 currentTime -= Time.deltaTime;
                 mainTimerDisplay.text = currentTime.ToString("0.00");
+                mainScoreDisplay.text = PlayerScore.ToString() + ":" + ComputerScore.ToString();
             }
     }
 

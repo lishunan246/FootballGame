@@ -22,7 +22,8 @@ public class Shooter : MonoBehaviour
         if (collision.gameObject.tag == "Football")
         {
             var ball = collision.gameObject;
-            var f = ball.transform.position - transform.position;
+            var f = gameObject.transform.forward;
+
             f[1] = up;
 
             ball.GetComponent<Rigidbody>().AddForce(f*(_kickForce+0.2f)*force);
