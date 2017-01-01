@@ -7,9 +7,10 @@ public class GameManager : MonoBehaviour
     public static GameManager gm;
 
     public int beatLevelScore = 0;
+    public bool OffBorder = false;
 
-    public int score1 = 0;
-    public int score2 = 0;
+    public int PlayerScore = 0;
+    public int ComputerScore = 0;
 
     public bool canBeatLevel = false;
 
@@ -46,7 +47,7 @@ public class GameManager : MonoBehaviour
             gm = gameObject.GetComponent<GameManager>();
 
         // init scoreboard to 0
-        mainScoreDisplay.text = "0";
+        mainScoreDisplay.text = "0:0";
 
         // inactivate the gameOverScoreOutline gameObject, if it is set
         if (gameOverScoreOutline)
@@ -74,6 +75,10 @@ public class GameManager : MonoBehaviour
             {
                 // check to see if timer has run out
                 EndGame();
+            }
+            else if(OffBorder)
+            {
+                 RestartGame();
             }
             else
             {
