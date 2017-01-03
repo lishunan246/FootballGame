@@ -21,9 +21,9 @@ public class GoalDetect : MonoBehaviour {
 		
 	}
 
-    private void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision col)
     {
-        var obj = collision.gameObject;
+        var obj = col.gameObject;
         if (obj.tag == "Football")
         {
             if (side == Side.Computer)

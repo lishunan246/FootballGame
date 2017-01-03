@@ -7,19 +7,16 @@ public class GameManager : MonoBehaviour
     public static GameManager gm;
 
     public int beatLevelScore = 0;
-    public bool OffBorder = false;
-
-    public int PlayerScore = 0;
-    public int ComputerScore = 0;
 
     public bool canBeatLevel = false;
+    public int ComputerScore;
 
     private float currentTime;
+    public GameObject Football;
 
     public bool gameIsOver;
 
     public GameObject gameOverScoreOutline;
-    public GameObject Football;
 
     public Text mainScoreDisplay;
     public Text mainTimerDisplay;
@@ -28,15 +25,23 @@ public class GameManager : MonoBehaviour
 
     public GameObject nextLevelButtons;
     public string nextLevelToLoad;
+    public bool OffBorder;
+    private bool offBorderHandled;
 
     public GameObject playAgainButtons;
     public string playAgainLevelToLoad;
+    public GameObject Player;
+
+    public int PlayerScore;
+
+    private Vector3 pos = Vector3.zero;
 
     // public variables
     public int score;
 
     public float startTime = 5.0f;
 
+    public float OffBorderTimeLeft = 3.0f;
     // setup the game
     private void Start()
     {
@@ -67,7 +72,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (!gameIsOver)
-            if (canBeatLevel && (score >= beatLevelScore))
+            if (canBeatLevel && score >= beatLevelScore)
             {
                 // check to see if beat game
                 BeatLevel();
@@ -77,21 +82,51 @@ public class GameManager : MonoBehaviour
                 // check to see if timer has run out
                 EndGame();
             }
-            else if(OffBorder)
-            {
-                if (Football.GetComponent<Rigidbody>().velocity.magnitude<1)
-                {
-                    RestartGame();
-                    gm.OffBorder = false;
-                }
-            }
             else
             {
+                if (OffBorder)
+                {
+                    if (!offBorderHandled)
+                    {
+                        var lastPosition = Football.gameObject.transform.position;
+                        if (pos == Vector3.zero)
+                            pos = lastPosition;
+
+                        if (Mathf.Abs(pos.x) < 7.5 && Mathf.Abs(pos.y) < 4.8 && Mathf.Abs(pos.z) > 54.7)
+                            if (pos.z > 0)
+                                PlayerScore++;
+                            else
+                                ComputerScore++;
+                        offBorderHandled = true;
+                    }
+                    OffBorderTimeLeft -= Time.deltaTime;
+                    if (OffBorderTimeLeft < 0)
+                    {
+                        ResumeGame();
+                    }
+
+              
+                        
+                }
                 // game playing state, so update the timer
                 currentTime -= Time.deltaTime;
                 mainTimerDisplay.text = currentTime.ToString("0.00");
-                mainScoreDisplay.text = PlayerScore.ToString() + ":" + ComputerScore.ToString();
+                mainScoreDisplay.text = PlayerScore + ":" + ComputerScore;
             }
+    }
+
+    private void ResumeGame()
+    {
+        var v = new Vector3(0.0f, 0.25f, 0.0f);
+
+        Football.transform.position = v;
+        Football.GetComponent<Rigidbody>().Sleep();
+        Player.transform.position = new Vector3(0, 1, -3);
+        Player.transform.rotation.Set(0, 0, 0, 0);
+        gm.OffBorder = false;
+        pos = Vector3.zero;
+        offBorderHandled = false;
+        OffBorderTimeLeft = 3.0f;
     }
 
     private void EndGame()
