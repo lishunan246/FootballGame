@@ -22,4 +22,13 @@ public class CheckBorder : MonoBehaviour
 	    }
 
 	}
+
+	void OnCollisionEnter()
+	{
+		if (Collision.gameObject.name=="Player")
+		{
+			GetComponent<AudioSource> ().Play ();
+		}
+
+	}
 }
