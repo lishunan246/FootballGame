@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckBorder : MonoBehaviour
+public class soccer : MonoBehaviour
 {
     public float MaxX;
     public float MaxY;
@@ -23,9 +23,9 @@ public class CheckBorder : MonoBehaviour
 
 	}
 
-	void OnCollisionEnter()
+	void OnCollisionEnter(Collision col)
 	{
-		if (Collision.gameObject.name=="Player")
+		if (col.collider.transform.gameObject.name=="Player")
 		{
 			GetComponent<AudioSource> ().Play ();
 		}
