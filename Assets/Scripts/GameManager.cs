@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public bool gameIsOver;
 
     public GameObject gameOverScoreOutline;
+    public GameObject Football;
 
     public Text mainScoreDisplay;
     public Text mainTimerDisplay;
@@ -78,7 +79,11 @@ public class GameManager : MonoBehaviour
             }
             else if(OffBorder)
             {
-                 RestartGame();
+                if (Football.GetComponent<Rigidbody>().velocity.magnitude<1)
+                {
+                    RestartGame();
+                    gm.OffBorder = false;
+                }
             }
             else
             {
