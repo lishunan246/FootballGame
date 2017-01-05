@@ -24,10 +24,11 @@ public class Trace : MonoBehaviour
 	    v2.y = 0;
 	    var r = Vector3.ProjectOnPlane(v.normalized, v2);
 	    var t = Vector3.Dot(v, v2);
-
+        var turnRight = Quaternion.FromToRotation(Vector3.forward, Vector3.right);
+	    var right = turnRight * v2;
         if (t < 0)
 	    {
-            if(Vector3.Dot(v+v2,Vector3.right)>0)
+            if(Vector3.Dot(v,right)<0)
                 tran.localPosition = pos - Vector3.right  * 100;
             else
             {
@@ -36,7 +37,7 @@ public class Trace : MonoBehaviour
         }
 	    else
 	    {
-            if (Vector3.Dot(v + v2, Vector3.right) < 0)
+            if (Vector3.Dot(v , right) > 0)
                 tran.localPosition = pos + Vector3.right* r.magnitude * 100;
             else
             {
