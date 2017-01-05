@@ -13,6 +13,7 @@ public class Trace : MonoBehaviour
     void Start () {
         tran = GetComponent<RectTransform>();
         pos = tran.localPosition;
+        pos.x = 0;
     }
 	
 	// Update is called once per frame
