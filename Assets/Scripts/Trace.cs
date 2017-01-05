@@ -23,14 +23,25 @@ public class Trace : MonoBehaviour
 	    var v2 = PlayerCamera.transform.forward;
 	    v2.y = 0;
 	    var r = Vector3.ProjectOnPlane(v.normalized, v2);
-	    if (Vector3.Dot(v, v2) < 0)
+	    var t = Vector3.Dot(v, v2);
+
+        if (t < 0)
 	    {
-	        
-            tran.localPosition = pos + r.normalized * 200;
+            if(Vector3.Dot(v+v2,Vector3.right)>0)
+                tran.localPosition = pos - Vector3.right  * 100;
+            else
+            {
+                tran.localPosition = pos + Vector3.right * 100;
+            }
         }
 	    else
 	    {
-            tran.localPosition = pos + r * 200;
+            if (Vector3.Dot(v + v2, Vector3.right) < 0)
+                tran.localPosition = pos + Vector3.right* r.magnitude * 100;
+            else
+            {
+                tran.localPosition = pos - Vector3.right * r.magnitude * 100;
+            }
         }
 	    
 	}
