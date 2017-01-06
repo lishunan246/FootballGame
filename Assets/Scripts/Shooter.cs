@@ -35,26 +35,26 @@ public class Shooter : MonoBehaviour
     private void Update()
     {
         // Detect if fire button is pressed
-        if (Input.GetButtonDown("Fire1"))
-            if (projectile)
-            {
-                // Instantiante projectile at the camera + 1 meter forward with camera rotation
-                var newProjectile =
-                    Instantiate(projectile, transform.position + transform.forward, transform.rotation);
+        // if (Input.GetButtonDown("Fire1"))
+        //     if (projectile)
+        //     {
+        //         // Instantiante projectile at the camera + 1 meter forward with camera rotation
+        //         var newProjectile =
+        //             Instantiate(projectile, transform.position + transform.forward, transform.rotation);
 
-                // if the projectile does not have a rigidbody component, add one
-                if (!newProjectile.GetComponent<Rigidbody>())
-                    newProjectile.AddComponent<Rigidbody>();
-                // Apply force to the newProjectile's Rigidbody component if it has one
-                newProjectile.GetComponent<Rigidbody>().AddForce(transform.forward*power, ForceMode.VelocityChange);
+        //         // if the projectile does not have a rigidbody component, add one
+        //         if (!newProjectile.GetComponent<Rigidbody>())
+        //             newProjectile.AddComponent<Rigidbody>();
+        //         // Apply force to the newProjectile's Rigidbody component if it has one
+        //         newProjectile.GetComponent<Rigidbody>().AddForce(transform.forward*power, ForceMode.VelocityChange);
 
-                // play sound effect if set
-                if (shootSFX)
-                    if (newProjectile.GetComponent<AudioSource>())
-                        newProjectile.GetComponent<AudioSource>().PlayOneShot(shootSFX);
-                    else
-                        AudioSource.PlayClipAtPoint(shootSFX, newProjectile.transform.position);
-            }
+        //         // play sound effect if set
+        //         if (shootSFX)
+        //             if (newProjectile.GetComponent<AudioSource>())
+        //                 newProjectile.GetComponent<AudioSource>().PlayOneShot(shootSFX);
+        //             else
+        //                 AudioSource.PlayClipAtPoint(shootSFX, newProjectile.transform.position);
+        //     }
 
         if (Input.GetButton("Jump"))
         {
