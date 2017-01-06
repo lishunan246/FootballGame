@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
-using Boo.Lang.Environments;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,16 +12,24 @@ public class GameManager : MonoBehaviour
         Over,
         ToStart
     }
+
+    public enum Side
+    {
+        Player,
+        Computer
+    }
+
     // make game manager public static so can access this from other scripts
     public static GameManager gm;
-    public Camera MainCamera;
+    public GameObject AI_Active;
     public int ComputerScore;
     private float currentTime;
     public GameObject Football;
 
-    public GameStatus status;
-
     public GameObject gameOverScoreOutline;
+
+    public Side LastBallTouch;
+    public Camera MainCamera;
 
     public Text mainScoreDisplay;
     public Text mainTimerDisplay;
@@ -33,7 +39,7 @@ public class GameManager : MonoBehaviour
     public GameObject nextLevelButtons;
     public string nextLevelToLoad;
     public bool OffBorder;
-    
+
 
     public float OffBorderTimeLeft = 3.0f;
 
@@ -45,6 +51,7 @@ public class GameManager : MonoBehaviour
 
     private Vector3 PositionOnBorder = Vector3.zero;
     public float startTime = 5.0f;
+    public GameStatus status;
     // setup the game
     private void Start()
     {
@@ -74,49 +81,50 @@ public class GameManager : MonoBehaviour
     // this is the main game event loop
     private void Update()
     {
-        if (status == GameStatus.Running)
+        switch (status)
         {
-            if (currentTime < 0)
-            {
-                // check to see if timer has run out
-                EndGame();
-            }
-            else
-            {
-                if (OffBorder)
+            case GameStatus.Running:
+                if (currentTime < 0)
                 {
-                    if (status == GameStatus.Running)
-                    {
-                        var lastPosition = Football.gameObject.transform.position;
-                        if (PositionOnBorder == Vector3.zero)
-                            PositionOnBorder = lastPosition;
-
-                        if (Mathf.Abs(PositionOnBorder.x) < 7.5 && Mathf.Abs(PositionOnBorder.y) < 4.8 && Mathf.Abs(PositionOnBorder.z) > 54.7)
-                        {
-                            status = GameStatus.Goal;
-
-                            if (PositionOnBorder.z > 0)
-                                PlayerScore++;
-                            else
-                                ComputerScore++;
-                        }
-                        else
-                        {
-                            status = GameStatus.OffBorder;
-                        }
-                    }
+                    // check to see if timer has run out
+                    EndGame();
                 }
-                // game playing state, so update the timer
-                currentTime -= Time.deltaTime;
-                mainTimerDisplay.text = currentTime.ToString("0.00");
-                mainScoreDisplay.text = PlayerScore + ":" + ComputerScore;
-            }
-        }
-        else if(status==GameStatus.OffBorder||status==GameStatus.Goal)
-        {
-            OffBorderTimeLeft -= Time.deltaTime;
-            if (OffBorderTimeLeft < 0)
-                ResumeGame();
+                else
+                {
+                    if (OffBorder)
+                        if (status == GameStatus.Running)
+                        {
+                            var lastPosition = Football.gameObject.transform.position;
+                            if (PositionOnBorder == Vector3.zero)
+                                PositionOnBorder = lastPosition;
+
+                            if (Mathf.Abs(PositionOnBorder.x) < 7.5 && Mathf.Abs(PositionOnBorder.y) < 4.8 &&
+                                Mathf.Abs(PositionOnBorder.z) > 54.7)
+                            {
+                                status = GameStatus.Goal;
+
+                                if (PositionOnBorder.z > 0)
+                                    PlayerScore++;
+                                else
+                                    ComputerScore++;
+                            }
+                            else
+                            {
+                                status = GameStatus.OffBorder;
+                            }
+                        }
+                    // game playing state, so update the timer
+                    currentTime -= Time.deltaTime;
+                    mainTimerDisplay.text = currentTime.ToString("0.00");
+                    mainScoreDisplay.text = PlayerScore + ":" + ComputerScore;
+                }
+                break;
+            case GameStatus.OffBorder:
+            case GameStatus.Goal:
+                OffBorderTimeLeft -= Time.deltaTime;
+                if (OffBorderTimeLeft < 0)
+                    ResumeGame();
+                break;
         }
     }
 
@@ -126,36 +134,52 @@ public class GameManager : MonoBehaviour
         Vector3 newPlayerPos;
         if (status == GameStatus.Goal)
         {
-            newBallPos = 0.25f*Vector3.up;
+            newBallPos = 0.25f * Vector3.up;
             newPlayerPos = new Vector3(0, 1, -3);
+            Player.transform.position = newPlayerPos;
         }
-        else if(status==GameStatus.OffBorder)
+        else if (status == GameStatus.OffBorder)
         {
             var d = Vector3.zero - PositionOnBorder;
             var n = PositionOnBorder + d.normalized;
             n.y = 0.25f;
             newBallPos = n;
-            var m = PositionOnBorder - d.normalized*2;
+            var m = PositionOnBorder - d.normalized * 2;
             m.y = 1;
             newPlayerPos = m;
+            switch (gm.LastBallTouch)
+            {
+                case Side.Player:
+                {
+                    AI_Active.transform.position = newPlayerPos;
+                    break;
+                }
+                case Side.Computer:
+                {
+                    Player.transform.position = newPlayerPos;
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
         else
         {
-            throw new Exception("bad status: "+status.ToString());
+            throw new Exception("bad status: " + status);
         }
 
-        
+
         Football.GetComponent<Rigidbody>().Sleep();
         Player.GetComponent<Rigidbody>().Sleep();
         Football.transform.position = newBallPos;
-        Player.transform.position = newPlayerPos;
-        var lookPos = newPlayerPos- newBallPos;
+
+        var lookPos = newPlayerPos - newBallPos;
         var rotation = Quaternion.LookRotation(lookPos);
         Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, rotation, Time.deltaTime);
 //        Player.transform.LookAt(newBallPos);
         gm.OffBorder = false;
         PositionOnBorder = Vector3.zero;
-        
+
         OffBorderTimeLeft = 3.0f;
         status = GameStatus.Running;
     }
@@ -163,7 +187,7 @@ public class GameManager : MonoBehaviour
     private void EndGame()
     {
         // game is over
-        status=GameStatus.Over;
+        status = GameStatus.Over;
 
         // repurpose the timer to display a message to the player
         mainTimerDisplay.text = "GAME OVER";
