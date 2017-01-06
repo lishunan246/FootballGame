@@ -1,20 +1,27 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq.Expressions;
+using Boo.Lang.Environments;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public enum GameStatus
+    {
+        Running,
+        OffBorder,
+        Goal,
+        Over,
+        ToStart
+    }
     // make game manager public static so can access this from other scripts
     public static GameManager gm;
-
-    public int beatLevelScore = 0;
-
-    public bool canBeatLevel = false;
+    public Camera MainCamera;
     public int ComputerScore;
-
     private float currentTime;
     public GameObject Football;
 
-    public bool gameIsOver;
+    public GameStatus status;
 
     public GameObject gameOverScoreOutline;
 
@@ -26,7 +33,9 @@ public class GameManager : MonoBehaviour
     public GameObject nextLevelButtons;
     public string nextLevelToLoad;
     public bool OffBorder;
-    private bool offBorderHandled;
+    
+
+    public float OffBorderTimeLeft = 3.0f;
 
     public GameObject playAgainButtons;
     public string playAgainLevelToLoad;
@@ -34,14 +43,8 @@ public class GameManager : MonoBehaviour
 
     public int PlayerScore;
 
-    private Vector3 pos = Vector3.zero;
-
-    // public variables
-    public int score;
-
+    private Vector3 PositionOnBorder = Vector3.zero;
     public float startTime = 5.0f;
-
-    public float OffBorderTimeLeft = 3.0f;
     // setup the game
     private void Start()
     {
@@ -71,13 +74,9 @@ public class GameManager : MonoBehaviour
     // this is the main game event loop
     private void Update()
     {
-        if (!gameIsOver)
-            if (canBeatLevel && score >= beatLevelScore)
-            {
-                // check to see if beat game
-                BeatLevel();
-            }
-            else if (currentTime < 0)
+        if (status == GameStatus.Running)
+        {
+            if (currentTime < 0)
             {
                 // check to see if timer has run out
                 EndGame();
@@ -86,53 +85,85 @@ public class GameManager : MonoBehaviour
             {
                 if (OffBorder)
                 {
-                    if (!offBorderHandled)
+                    if (status == GameStatus.Running)
                     {
                         var lastPosition = Football.gameObject.transform.position;
-                        if (pos == Vector3.zero)
-                            pos = lastPosition;
+                        if (PositionOnBorder == Vector3.zero)
+                            PositionOnBorder = lastPosition;
 
-                        if (Mathf.Abs(pos.x) < 7.5 && Mathf.Abs(pos.y) < 4.8 && Mathf.Abs(pos.z) > 54.7)
-                            if (pos.z > 0)
+                        if (Mathf.Abs(PositionOnBorder.x) < 7.5 && Mathf.Abs(PositionOnBorder.y) < 4.8 && Mathf.Abs(PositionOnBorder.z) > 54.7)
+                        {
+                            status = GameStatus.Goal;
+
+                            if (PositionOnBorder.z > 0)
                                 PlayerScore++;
                             else
                                 ComputerScore++;
-                        offBorderHandled = true;
+                        }
+                        else
+                        {
+                            status = GameStatus.OffBorder;
+                        }
                     }
-                    OffBorderTimeLeft -= Time.deltaTime;
-                    if (OffBorderTimeLeft < 0)
-                    {
-                        ResumeGame();
-                    }
-
-              
-                        
                 }
                 // game playing state, so update the timer
                 currentTime -= Time.deltaTime;
                 mainTimerDisplay.text = currentTime.ToString("0.00");
                 mainScoreDisplay.text = PlayerScore + ":" + ComputerScore;
             }
+        }
+        else if(status==GameStatus.OffBorder||status==GameStatus.Goal)
+        {
+            OffBorderTimeLeft -= Time.deltaTime;
+            if (OffBorderTimeLeft < 0)
+                ResumeGame();
+        }
     }
 
     private void ResumeGame()
     {
-        var v = new Vector3(0.0f, 0.25f, 0.0f);
+        Vector3 newBallPos;
+        Vector3 newPlayerPos;
+        if (status == GameStatus.Goal)
+        {
+            newBallPos = 0.25f*Vector3.up;
+            newPlayerPos = new Vector3(0, 1, -3);
+        }
+        else if(status==GameStatus.OffBorder)
+        {
+            var d = Vector3.zero - PositionOnBorder;
+            var n = PositionOnBorder + d.normalized;
+            n.y = 0.25f;
+            newBallPos = n;
+            var m = PositionOnBorder - d.normalized*2;
+            m.y = 1;
+            newPlayerPos = m;
+        }
+        else
+        {
+            throw new Exception("bad status: "+status.ToString());
+        }
 
-        Football.transform.position = v;
+        
         Football.GetComponent<Rigidbody>().Sleep();
-        Player.transform.position = new Vector3(0, 1, -3);
-        Player.transform.rotation.Set(0, 0, 0, 0);
+        Player.GetComponent<Rigidbody>().Sleep();
+        Football.transform.position = newBallPos;
+        Player.transform.position = newPlayerPos;
+        var lookPos = newPlayerPos- newBallPos;
+        var rotation = Quaternion.LookRotation(lookPos);
+        Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, rotation, Time.deltaTime);
+//        Player.transform.LookAt(newBallPos);
         gm.OffBorder = false;
-        pos = Vector3.zero;
-        offBorderHandled = false;
+        PositionOnBorder = Vector3.zero;
+        
         OffBorderTimeLeft = 3.0f;
+        status = GameStatus.Running;
     }
 
     private void EndGame()
     {
         // game is over
-        gameIsOver = true;
+        status=GameStatus.Over;
 
         // repurpose the timer to display a message to the player
         mainTimerDisplay.text = "GAME OVER";
@@ -148,45 +179,6 @@ public class GameManager : MonoBehaviour
         // reduce the pitch of the background music, if it is set
         if (musicAudioSource)
             musicAudioSource.pitch = 0.5f; // slow down the music
-    }
-
-    private void BeatLevel()
-    {
-        // game is over
-        gameIsOver = true;
-
-        // repurpose the timer to display a message to the player
-        mainTimerDisplay.text = "LEVEL COMPLETE";
-
-        // activate the gameOverScoreOutline gameObject, if it is set
-        if (gameOverScoreOutline)
-            gameOverScoreOutline.SetActive(true);
-
-        // activate the nextLevelButtons gameObject, if it is set
-        if (nextLevelButtons)
-            nextLevelButtons.SetActive(true);
-
-        // reduce the pitch of the background music, if it is set
-        if (musicAudioSource)
-            musicAudioSource.pitch = 0.5f; // slow down the music
-    }
-
-    // public function that can be called to update the score or time
-    public void targetHit(int scoreAmount, float timeAmount)
-    {
-        // increase the score by the scoreAmount and update the text UI
-        score += scoreAmount;
-        mainScoreDisplay.text = score.ToString();
-
-        // increase the time by the timeAmount
-        currentTime += timeAmount;
-
-        // don't let it go negative
-        if (currentTime < 0)
-            currentTime = 0.0f;
-
-        // update the text UI
-        mainTimerDisplay.text = currentTime.ToString("0.00");
     }
 
     // public function that can be called to restart the game
