@@ -33,9 +33,7 @@ public class EnemyManager : MonoBehaviour
     public void ResetPosition()
     {
         for (var i = 0; i < _aiList.Length; ++i)
-        {
             _aiList[i].transform.position = _defaultPositions[i];
-        }
     }
 
     // Update is called once per frame
@@ -43,8 +41,7 @@ public class EnemyManager : MonoBehaviour
     {
         for (var i = 0; i < _aiList.Length; ++i)
             _distanceToBall[i] = (_aiList[i].transform.position - Football.transform.position).magnitude;
-        var min = _distanceToBall.Min();
-        //var index = _distanceToBall.ToList().IndexOf(min);
+
         var ranked = _distanceToBall.Select((d, i) =>
                 new {index = i, distance = d})
             .OrderBy(pair => pair.distance)
@@ -57,16 +54,17 @@ public class EnemyManager : MonoBehaviour
             {
                 Debug.Assert(s != null, "s != null");
                 GameManager.gm.AI_Active = s.gameObject;
+                s.status = AI.Status.Attack;
             }
-            if (i < 2)
+            else if (i ==1)
             {
                 Debug.Assert(s != null, "s != null");
-                s.isActive = true;
+                s.status=AI.Status.Assist;
             }
             else
             {
                 Debug.Assert(s != null, "s != null");
-                s.isActive = false;
+                s.status = AI.Status.Idle;
             }
         }
     }
