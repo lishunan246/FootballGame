@@ -11,6 +11,9 @@ public class Shooter : MonoBehaviour
     public float up = 1.0f;
     public float power = 10.0f;
 
+    // dribble
+    public float dribble_range = 5.0f;
+
     // Reference to projectile prefab to shoot
     public GameObject projectile;
 
@@ -34,27 +37,16 @@ public class Shooter : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        // Detect if fire button is pressed
-        // if (Input.GetButtonDown("Fire1"))
-        //     if (projectile)
-        //     {
-        //         // Instantiante projectile at the camera + 1 meter forward with camera rotation
-        //         var newProjectile =
-        //             Instantiate(projectile, transform.position + transform.forward, transform.rotation);
 
-        //         // if the projectile does not have a rigidbody component, add one
-        //         if (!newProjectile.GetComponent<Rigidbody>())
-        //             newProjectile.AddComponent<Rigidbody>();
-        //         // Apply force to the newProjectile's Rigidbody component if it has one
-        //         newProjectile.GetComponent<Rigidbody>().AddForce(transform.forward*power, ForceMode.VelocityChange);
-
-        //         // play sound effect if set
-        //         if (shootSFX)
-        //             if (newProjectile.GetComponent<AudioSource>())
-        //                 newProjectile.GetComponent<AudioSource>().PlayOneShot(shootSFX);
-        //             else
-        //                 AudioSource.PlayClipAtPoint(shootSFX, newProjectile.transform.position);
-        //     }
+        if(Input.GetButton("Fire1")){
+            GameObject ball = GameObject.FindWithTag("Football");
+            float dist = Vector3.Distance (gameObject.transform.position, ball.transform.position);
+            // Debug.Log (string.Format ("Distance between {0} and {1} is: {2}", gameObject, ball, dist));
+            if(dist<=dribble_range){
+                // stop the ball
+                ball.GetComponent<Rigidbody>().Sleep();
+            }
+        }
 
         if (Input.GetButton("Jump"))
         {
