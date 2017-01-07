@@ -9,6 +9,8 @@ public class AI : MonoBehaviour
         Shoot
     }
 
+    public bool isActive = false;
+
     // Use this for initialization
     private readonly Random rnd = new Random();
 
@@ -21,7 +23,8 @@ public class AI : MonoBehaviour
     public float ShootForce = 300.0f;
     public float ShootDistance = 20.0f;
     public GameManager.Side side = GameManager.Side.Computer;
-    public float Speed = 3.0f;
+    public float ActiveSpeed = 3.0f;
+    public float NonActiveSpeed = 0.3f;
     public Vector3 TargetGoal = 55 * Vector3.back;
     public float up = 1.0f;
     public float X_MAX;
@@ -52,7 +55,8 @@ public class AI : MonoBehaviour
         transformForward.y = 0;
         gameObject.transform.forward = transformForward;
         var rb = gameObject.GetComponent<Rigidbody>();
-        rb.MovePosition(gameObject.transform.position + transformForward.normalized * Speed * Time.deltaTime);
+        var sp = isActive ? ActiveSpeed : NonActiveSpeed;
+        rb.MovePosition(gameObject.transform.position + transformForward.normalized * sp * Time.deltaTime);
     }
 
     private bool NearTargetGoal()
@@ -88,8 +92,7 @@ public class AI : MonoBehaviour
                 var rb = gameObject.GetComponent<Rigidbody>();
                 rotateRigidBodyAroundPointBy(rb, gameObject.transform.position, Vector3.up, 180 * Time.deltaTime * t);
                 rotateRigidBodyAroundPointBy(_ball.GetComponent<Rigidbody>(), gameObject.transform.position, Vector3.up, 180 * Time.deltaTime * t);
-                //gameObject.transform.RotateAround(gameObject.transform.position, Vector3.up, 180 * Time.deltaTime*t);
-                //_ball.transform.RotateAround(gameObject.transform.position, Vector3.up, 180 * Time.deltaTime*t);
+           
             }
         }
     }
