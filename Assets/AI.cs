@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class AI : MonoBehaviour
 {
+    public GameManager.Side side=GameManager.Side.Computer;
     public float Speed =3.0f;
     public Vector3 TargetGoal = 55*Vector3.back;
     public float X_MAX;
@@ -93,7 +94,7 @@ public class AI : MonoBehaviour
             }
             
             _ball.GetComponent<Rigidbody>().AddForce(tf);
-
+            GameManager.gm.LastBallTouch = side;
             _tempDestination = GetDestination();
         }
     }

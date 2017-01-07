@@ -30,6 +30,7 @@ public class Shooter : MonoBehaviour
             f[1] = up;
 
             ball.GetComponent<Rigidbody>().AddForce(f*(_kickForce+0.2f)*force);
+            GameManager.gm.LastBallTouch=GameManager.Side.Player;
             _kickForce = 0;
         }
     }
