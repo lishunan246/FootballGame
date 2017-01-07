@@ -18,6 +18,9 @@ public class Shooter : MonoBehaviour
     public float dribbleRange = 5.0f;
     public Vector3 preForward = new Vector3(0.0f,0.0f,0.0f);
 
+    //stop ball
+    public float stopHeight = 0.28f;
+
     // Reference to projectile prefab to shoot
     public GameObject projectile;
 
@@ -51,7 +54,13 @@ public class Shooter : MonoBehaviour
             float dist = Vector3.Distance (gameObject.transform.position, _Football.transform.position);
             if(dist<=dribbleRange){
                 Debug.Log(string.Format("Distance:{0}",dist));
-                _Football.GetComponent<Rigidbody>().Sleep();
+                Vector3 pos = _Football.transform.position;
+                if(pos.y <= stopHeight){
+                    pos.y = 0.25f;
+                    _Football.GetComponent<Rigidbody>().Sleep();
+                    _Football.GetComponent<Rigidbody>().MovePosition(pos);
+                // Debug.Log(string.Format("Pos:{0}",pos));
+                }
             }
         }
         // GameObject ball = GameObject.FindWithTag("Football");
