@@ -15,7 +15,8 @@ public class Shooter : MonoBehaviour
     public float power = 10.0f;
 
     // dribble
-    public float dribbleRange = 5.0f;
+    public float dribbleRange = 1.0f;
+    public float dribbleForce = 2000.0f;
     public Vector3 preForward = new Vector3(0.0f,0.0f,0.0f);
 
     //stop ball
@@ -53,13 +54,23 @@ public class Shooter : MonoBehaviour
         if(Input.GetButton("Fire1")){
             float dist = Vector3.Distance (gameObject.transform.position, _Football.transform.position);
             if(dist<=dribbleRange){
-                Debug.Log(string.Format("Distance:{0}",dist));
+                Debug.Log(string.Format("Distance:{0},Dribble range {1}",dist,dribbleRange));
                 Vector3 pos = _Football.transform.position;
                 if(pos.y <= stopHeight){
-                    pos.y = 0.25f;
-                    _Football.GetComponent<Rigidbody>().Sleep();
-                    _Football.GetComponent<Rigidbody>().MovePosition(pos);
+                    // spin the ball
+                    Vector3 playPos = gameObject.transform.position;
+                    Vector3 forward = gameObject.transform.forward;
+                    Vector3 newBallPos = playPos + dist*forward;
+                    newBallPos.y = 0.25f;
+                    // _Football.GetComponent<Rigidbody>().Sleep();
+                    _Football.GetComponent<Rigidbody>().MovePosition(newBallPos);
+                    // _Football.GetComponent<Rigidbody>().AddForce(dribbleForce*(forward-preForward));
+                    // Debug.Log(string.Format("Dribble direction:{0}",forward));
+                    // preForward = forward;
                 // Debug.Log(string.Format("Pos:{0}",pos));
+                }
+                else{
+                    preForward = new Vector3(0,0,0);
                 }
             }
         }
