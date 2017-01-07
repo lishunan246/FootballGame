@@ -8,7 +8,7 @@ public class Shooter : MonoBehaviour
     private GameObject _Football;
 
     private readonly float MaxKickForce = 1.0f;
-    private readonly float baseKickForce = 20.0f;
+    private readonly float baseKickForce = 0.2f;
 
     public float force=300.0f;
     public float up = 1.0f;
@@ -46,22 +46,29 @@ public class Shooter : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        // GameObject ball = GameObject.FindWithTag("Football");
-        float dist = Vector3.Distance (gameObject.transform.position, _Football.transform.position);
-        // move the ball in horizon
-        if(dist<=dribbleRange){
-            Vector3 forward = gameObject.transform.forward;
-            _Football.GetComponent<Rigidbody>().AddForce((forward-preForward)*baseKickForce);
-            Debug.Log(string.Format("Applied force....{0}",(forward-preForward)*baseKickForce));
-            // sleep the ball
-            if(Input.GetButton("Fire1")){
-                // stop the ball
-                _Football.GetComponent<Rigidbody>().Sleep();     
+
+        if(Input.GetButton("Fire1")){
+            float dist = Vector3.Distance (gameObject.transform.position, _Football.transform.position);
+            if(dist<=dribbleRange){
+                _Football.GetComponent<Rigidbody>().Sleep();
             }
         }
-        else{
-            preForward = new Vector3(0.0f,0.0f,0.0f);
-        }
+        // GameObject ball = GameObject.FindWithTag("Football");
+        
+        // move the ball in horizon
+        // if(dist<=dribbleRange){
+        //     Vector3 forward = gameObject.transform.forward;
+        //     _Football.GetComponent<Rigidbody>().AddForce((forward-preForward)*baseKickForce);
+        //     Debug.Log(string.Format("Applied force....{0}",(forward-preForward)*baseKickForce));
+        //     // sleep the ball
+        //     if(Input.GetButton("Fire1")){
+        //         // stop the ball
+        //         _Football.GetComponent<Rigidbody>().Sleep();     
+        //     }
+        // }
+        // else{
+        //     preForward = new Vector3(0.0f,0.0f,0.0f);
+        // }
         
 
         if (Input.GetButton("Jump"))
