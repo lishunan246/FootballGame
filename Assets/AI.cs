@@ -60,6 +60,14 @@ public class AI : MonoBehaviour
         
         return distanceToGoal < ShootDistance;
     }
+
+    private void rotateRigidBodyAroundPointBy(Rigidbody rb, Vector3 origin, Vector3 axis, float angle)
+    {
+        Quaternion q = Quaternion.AngleAxis(angle, axis);
+        rb.MovePosition(q * (rb.transform.position - origin) + origin);
+        rb.MoveRotation(rb.transform.rotation * q);
+    }
+
     // Update is called once per frame
     private void Update()
     {
@@ -78,8 +86,10 @@ public class AI : MonoBehaviour
             {
                 var t = Vector3.Dot(gameObject.transform.forward, Vector3.right)>0?1:-1;
                 var rb = gameObject.GetComponent<Rigidbody>();
-                gameObject.transform.RotateAround(gameObject.transform.position, Vector3.up, 180 * Time.deltaTime*t);
-                _ball.transform.RotateAround(gameObject.transform.position, Vector3.up, 180 * Time.deltaTime*t);
+                rotateRigidBodyAroundPointBy(rb, gameObject.transform.position, Vector3.up, 180 * Time.deltaTime * t);
+                rotateRigidBodyAroundPointBy(_ball.GetComponent<Rigidbody>(), gameObject.transform.position, Vector3.up, 180 * Time.deltaTime * t);
+                //gameObject.transform.RotateAround(gameObject.transform.position, Vector3.up, 180 * Time.deltaTime*t);
+                //_ball.transform.RotateAround(gameObject.transform.position, Vector3.up, 180 * Time.deltaTime*t);
             }
         }
     }
