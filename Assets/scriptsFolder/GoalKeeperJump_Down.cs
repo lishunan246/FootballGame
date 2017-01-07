@@ -11,7 +11,7 @@ public class GoalKeeperJump_Down : MonoBehaviour {
 
 	void OnTriggerEnter( Collider other ) {
 	
-		if ( other.tag == "Ball" ) {
+		if ( other.tag == "Football" ) {
 		
 			/*
 			 * If the ball collides with either the bottom left trigger, or the bottom right trigger, the goalkeeer dives to save the ball. This is 

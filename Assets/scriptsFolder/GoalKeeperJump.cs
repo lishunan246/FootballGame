@@ -15,7 +15,7 @@ public class GoalKeeperJump : MonoBehaviour {
 
 	void OnTriggerEnter( Collider other ) {
 	
-		if (other.tag == "Ball")
+		if (other.tag == "Football")
 		{
 			Vector3 dir_goalkeeper = goalKeeper.transform.forward; //the firection of the keepr is his forward vector
 			Vector3 dir_ball = other.gameObject.GetComponent<Rigidbody>().velocity; //direction of the ball

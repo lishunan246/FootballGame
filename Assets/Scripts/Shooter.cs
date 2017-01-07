@@ -15,7 +15,7 @@ public class Shooter : MonoBehaviour
     public float power = 10.0f;
 
     // dribble
-    public float dribbleRange = 1.0f;
+    public float dribbleRange = 2.0f;
     public float dribbleForce = 2000.0f;
     public Vector3 preForward = new Vector3(0.0f,0.0f,0.0f);
 
@@ -69,9 +69,6 @@ public class Shooter : MonoBehaviour
                     // preForward = forward;
                 // Debug.Log(string.Format("Pos:{0}",pos));
                 }
-                else{
-                    preForward = new Vector3(0,0,0);
-                }
             }
         }
         // GameObject ball = GameObject.FindWithTag("Football");
@@ -94,6 +91,7 @@ public class Shooter : MonoBehaviour
 
         if (Input.GetButton("Jump"))
         {
+            Debug.Log(string.Format("force..."));
             _kickForce += 1.0f*Time.deltaTime;
             _kickForce = _kickForce > MaxKickForce ? MaxKickForce : _kickForce;
         }

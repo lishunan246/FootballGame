@@ -23,9 +23,12 @@ public class GoalKeeper_Script : MonoBehaviour {
 	
 	public GoalKeeper_State state;
 	public GameObject sphere;
-	public GameObject player;
+	public bool enemy;
+	// public GameObject player;
 	public Vector3 initial_Position; //goalkeeper starting position in the level
 	public CapsuleCollider capsuleCollider;	// A reference to teh collider of the main body of the keeper
+
+	private GameObject player;
 
 	// Use this for initialization
 	void Start () {
@@ -33,6 +36,11 @@ public class GoalKeeper_Script : MonoBehaviour {
 		state = GoalKeeper_State.RESTING; //
 		initial_Position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		GetComponent<Animation>()["playerIdle"].speed = 1.0f;
+		if (enemy) {
+			player = GameObject.FindWithTag ("Player");
+		} else {
+			player = GameManager.gm.AI_Active;
+		}
 	}
 	
 	// Update is called once per frame
@@ -125,9 +133,8 @@ public class GoalKeeper_Script : MonoBehaviour {
 		case GoalKeeper_State.MOVE_TO_RESTING:
 
 			capsuleCollider.direction = 1; //Resets the capsule collider to be vertical
-			if (!GetComponent<Animation>().IsPlaying("Move_Sideways"))
-			{
-				GetComponent<Animation>().Play("Move_Sideways");
+			if (!GetComponent<Animation> ().IsPlaying ("Move_Sideways")) {
+				GetComponent<Animation> ().Play ("Move_Sideways");
 			}
 			transform.LookAt(new Vector3(player.transform.position.x, transform.position.y , player.transform.position.z)); //face the player
 			transform.position = Vector3.MoveTowards(transform.position, initial_Position, Time.deltaTime); //move back to starting position
@@ -174,7 +181,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 	 */
 	void OnCollisionStay(Collision coll)
 	{
-		if (coll.collider.transform.gameObject.tag == "Ball" && state != GoalKeeper_State.JUMP_LEFT && state != GoalKeeper_State.JUMP_RIGHT &&
+		if (coll.collider.transform.gameObject.tag == "Football" && state != GoalKeeper_State.JUMP_LEFT && state != GoalKeeper_State.JUMP_RIGHT &&
 			 state != GoalKeeper_State.JUMP_LEFT_HIGH && state != GoalKeeper_State.JUMP_RIGHT_HIGH)
 		{
 			state = GoalKeeper_State.MOVE_TO_RESTING;

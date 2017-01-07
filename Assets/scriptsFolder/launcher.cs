@@ -157,18 +157,18 @@ public class launcher : MonoBehaviour {
 			gamePaused = !gamePaused;
 		}
 
-//		if(gamePaused)
-//		{
+		if(gamePaused)
+		{
 //			DisableAllCloths();
-//		}
-//		/*
-//		 * Here I make sure the game is not running in slow motion before I call EnableAllCloths() as this function
-//		 * also affects the speed at which the game is run
-//		 */ 
-//		if(!gamePaused && !slowMotion)
-//		{
+		}
+		/*
+		 * Here I make sure the game is not running in slow motion before I call EnableAllCloths() as this function
+		 * also affects the speed at which the game is run
+		 */ 
+		if(!gamePaused && !slowMotion)
+		{
 //			EnableAllCloths();
-//		}
+		}
 
 		/*This is the bool that toggles whether the instructions are displayed or not
 		 */ 
@@ -379,10 +379,10 @@ public class launcher : MonoBehaviour {
 		hSliderValue = GUI.HorizontalSlider(new Rect(Screen.width/2, Screen.height - 80, 100, 50), hSliderValue, minSliderValue, maxSliderValue);
 	}
 
-//	/*
-//	 * Disables all interactive cloths when the player pauses the game, as they will cause the game to run at a low
-//	 * frame rate otherwise
-//	 */ 
+	/*
+	 * Disables all interactive cloths when the player pauses the game, as they will cause the game to run at a low
+	 * frame rate otherwise
+	 */ 
 //	void DisableAllCloths()
 //	{
 //		InteractiveCloth[] cloths = FindObjectsOfType(typeof(InteractiveCloth)) as InteractiveCloth[];
@@ -392,9 +392,9 @@ public class launcher : MonoBehaviour {
 //			Time.timeScale = 0.0f;
 //		}
 //	}
-//	/*
-//	 * Enables all interactive cloths after player unpauses the game
-//	 */ 
+	/*
+	 * Enables all interactive cloths after player unpauses the game
+	 */ 
 //	void EnableAllCloths()
 //	{
 //		InteractiveCloth[] cloths = FindObjectsOfType(typeof(InteractiveCloth)) as InteractiveCloth[];
