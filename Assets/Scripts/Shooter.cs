@@ -31,7 +31,7 @@ public class Shooter : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Football")
-        {
+        { 
             var ball = collision.gameObject;
             var f = gameObject.transform.forward;
 
@@ -50,6 +50,7 @@ public class Shooter : MonoBehaviour
         if(Input.GetButton("Fire1")){
             float dist = Vector3.Distance (gameObject.transform.position, _Football.transform.position);
             if(dist<=dribbleRange){
+                Debug.Log(string.Format("Distance:{0}",dist));
                 _Football.GetComponent<Rigidbody>().Sleep();
             }
         }
