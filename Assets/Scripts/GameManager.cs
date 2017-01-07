@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
 
     public int PlayerScore;
 
-    private Vector3 PositionOnBorder = Vector3.zero;
+    private Vector3 _positionOnBorder = Vector3.zero;
     public float startTime = 5.0f;
     public GameStatus status;
     // setup the game
@@ -95,15 +95,15 @@ public class GameManager : MonoBehaviour
                         if (status == GameStatus.Running)
                         {
                             var lastPosition = Football.gameObject.transform.position;
-                            if (PositionOnBorder == Vector3.zero)
-                                PositionOnBorder = lastPosition;
+                            if (_positionOnBorder == Vector3.zero)
+                                _positionOnBorder = lastPosition;
 
-                            if (Mathf.Abs(PositionOnBorder.x) < 7.5 && Mathf.Abs(PositionOnBorder.y) < 4.8 &&
-                                Mathf.Abs(PositionOnBorder.z) > 54.7)
+                            if (Mathf.Abs(_positionOnBorder.x) < 7.5 && Mathf.Abs(_positionOnBorder.y) < 4.8 &&
+                                Mathf.Abs(_positionOnBorder.z) > 54.7)
                             {
                                 status = GameStatus.Goal;
 
-                                if (PositionOnBorder.z > 0)
+                                if (_positionOnBorder.z > 0)
                                     PlayerScore++;
                                 else
                                     ComputerScore++;
@@ -140,11 +140,11 @@ public class GameManager : MonoBehaviour
         }
         else if (status == GameStatus.OffBorder)
         {
-            var d = Vector3.zero - PositionOnBorder;
-            var n = PositionOnBorder + d.normalized;
+            var d = Vector3.zero - _positionOnBorder;
+            var n = _positionOnBorder + d.normalized;
             n.y = 0.25f;
             newBallPos = n;
-            var m = PositionOnBorder - d.normalized * 2;
+            var m = _positionOnBorder - d.normalized * 2;
             m.y = 1;
             newPlayerPos = m;
             switch (gm.LastBallTouch)
@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
         Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, rotation, Time.deltaTime);
 //        Player.transform.LookAt(newBallPos);
         gm.OffBorder = false;
-        PositionOnBorder = Vector3.zero;
+        _positionOnBorder = Vector3.zero;
 
         OffBorderTimeLeft = 3.0f;
         status = GameStatus.Running;
