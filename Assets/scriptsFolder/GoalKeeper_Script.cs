@@ -36,15 +36,16 @@ public class GoalKeeper_Script : MonoBehaviour {
 		state = GoalKeeper_State.RESTING; //
 		initial_Position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		GetComponent<Animation>()["playerIdle"].speed = 1.0f;
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
 		if (enemy) {
 			player = GameObject.FindWithTag ("Player");
 		} else {
 			player = GameManager.gm.AI_Active;
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
 		
 		/* This switch statement lets me control the goalkeepr state.
 		 */ 
@@ -136,7 +137,10 @@ public class GoalKeeper_Script : MonoBehaviour {
 			if (!GetComponent<Animation> ().IsPlaying ("Move_Sideways")) {
 				GetComponent<Animation> ().Play ("Move_Sideways");
 			}
-			transform.LookAt(new Vector3(player.transform.position.x, transform.position.y , player.transform.position.z)); //face the player
+			if (player) {
+				transform.LookAt(new Vector3(player.transform.position.x, transform.position.y , player.transform.position.z)); //face the player
+			}
+
 			transform.position = Vector3.MoveTowards(transform.position, initial_Position, Time.deltaTime); //move back to starting position
 
 			/*Once the keeper reaches his starting position, he changes his state to RESTING as he doesnt need to move
@@ -150,13 +154,15 @@ public class GoalKeeper_Script : MonoBehaviour {
 					
 			/*THis is the goalkeeper idle state. He faces the player and stays still in this state.
 			 */
-			case GoalKeeper_State.RESTING:
+		case GoalKeeper_State.RESTING:
 			
-				capsuleCollider.direction = 1;
-				if ( !GetComponent<Animation>().IsPlaying("playerIdle") )
-					GetComponent<Animation>().Play("playerIdle");
-				
+			capsuleCollider.direction = 1;
+			if (!GetComponent<Animation> ().IsPlaying ("playerIdle"))
+				GetComponent<Animation> ().Play ("playerIdle");
+			if (player) {
 				transform.LookAt( new Vector3( player.transform.position.x, transform.position.y , player.transform.position.z)  );
+			}
+				
 			
 				float distanceBall = (transform.position - sphere.transform.position).magnitude;
 		
