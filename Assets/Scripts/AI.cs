@@ -29,12 +29,16 @@ public class AI : MonoBehaviour
     public float up = 1.0f;
     public float X_MAX;
     public float distanceToGoal;
+    public float distanceToPlayer;
+    public float PassDistance = 10.0f;
 
     private void Start()
     {
         _ball = GameObject.FindGameObjectWithTag("Football");
         _tempDestination = GetDestination();
     }
+
+
 
     private Vector3 GetDestination()
     {
@@ -75,6 +79,8 @@ public class AI : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        distanceToPlayer = (GameObject.FindGameObjectWithTag("Player").transform.position-transform.position).magnitude;
+        AI_Stratagy = distanceToPlayer < PassDistance ? Stratagy.Shoot : Stratagy.Pass; 
         distanceToGoal = (TargetGoal - gameObject.transform.position).magnitude;
         if (DistanceToBall() > BallDistance + 0.2)
         {
