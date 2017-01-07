@@ -38,6 +38,8 @@ public class AI : MonoBehaviour
         _tempDestination = GetDestination();
     }
 
+
+
     private Vector3 GetDestination()
     {
         var result = Vector3.zero;

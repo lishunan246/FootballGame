@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = System.Diagnostics.Debug;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class GameManager : MonoBehaviour
     public int ComputerScore;
     private float currentTime;
     public GameObject Football;
-
+    public GameObject Enemies;
     public GameObject gameOverScoreOutline;
 
     public Side LastBallTouch;
@@ -179,9 +180,11 @@ public class GameManager : MonoBehaviour
 //        Player.transform.LookAt(newBallPos);
         gm.OffBorder = false;
         _positionOnBorder = Vector3.zero;
-
-        OffBorderTimeLeft = 3.0f;
         status = GameStatus.Running;
+        OffBorderTimeLeft = 3.0f;
+        var sc = Enemies.GetComponent("EnemyManager") as EnemyManager;
+        sc.ResetPosition();
+        
     }
 
     private void EndGame()

@@ -30,6 +30,14 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
+    public void ResetPosition()
+    {
+        for (var i = 0; i < _aiList.Length; ++i)
+        {
+            _aiList[i].transform.position = _defaultPositions[i];
+        }
+    }
+
     // Update is called once per frame
     private void Update()
     {
@@ -45,6 +53,11 @@ public class EnemyManager : MonoBehaviour
         for (var i = 0; i < _aiList.Length; ++i)
         {
             var s = _aiList[ranked[i].index].GetComponent("AI") as AI;
+            if (i == 0)
+            {
+                Debug.Assert(s != null, "s != null");
+                GameManager.gm.AI_Active = s.gameObject;
+            }
             if (i < 2)
             {
                 Debug.Assert(s != null, "s != null");
