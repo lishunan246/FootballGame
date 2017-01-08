@@ -150,8 +150,14 @@ public class AI : MonoBehaviour
         }
     }
 
+
     private void UpdateStatus()
     {
+        if (GameManager.gm.status == GameManager.GameStatus.OffBorder ||
+            GameManager.gm.status == GameManager.GameStatus.Goal)
+        {
+            status=Status.Return;
+        }
         DistanceToPlayer =
             (GameObject.FindGameObjectWithTag("Player").transform.position - transform.position).magnitude;
         AiStratagy = ShouldGoal()

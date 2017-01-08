@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -78,6 +79,15 @@ public class opponent : MonoBehaviour {
 				GetComponent<Animation> ().Play ("run");
 			}
 			break;
+		    case AI.Status.Return:
+                if (!GetComponent<Animation>().IsPlaying("run"))
+                {
+                    //GetComponent<Animation>()["run"].speed = speed*0.3f;
+                    GetComponent<Animation>().Play("run");
+                }
+                break;
+		    default:
+		        throw new ArgumentOutOfRangeException();
 		}
 	}
 }

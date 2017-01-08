@@ -39,6 +39,11 @@ public class EnemyManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (GameManager.gm.status == GameManager.GameStatus.OffBorder ||
+            GameManager.gm.status == GameManager.GameStatus.Goal)
+        {
+            return;
+        }
         for (var i = 0; i < _aiList.Length; ++i)
             _distanceToBall[i] = (_aiList[i].transform.position - Football.transform.position).magnitude;
 
