@@ -8,7 +8,8 @@ public class AI : MonoBehaviour
     {
         Attack,
         Assist,
-        Idle
+        Idle,
+        Return
     }
 
     public enum Stratagy
@@ -43,10 +44,12 @@ public class AI : MonoBehaviour
     public float XMax;
     public float CurrentSpeed;
 
+    public Vector3 DefaultPosition;
     private void Start()
     {
         _ball = GameObject.FindGameObjectWithTag("Football");
         _tempDestination = GetDestination();
+        DefaultPosition = transform.position;
     }
 
 
@@ -134,6 +137,9 @@ public class AI : MonoBehaviour
                 MoveTo(_ball.transform.position);
                 break;
             }
+            case Status.Return:
+                MoveTo(DefaultPosition);
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
