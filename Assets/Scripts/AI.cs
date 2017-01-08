@@ -23,12 +23,15 @@ public class AI : MonoBehaviour
     private readonly Random _rnd = new Random();
 
     private GameObject _ball;
-    
+
     private Vector3 _tempDestination;
     public float ActiveSpeed = 3.0f;
     public Stratagy AiStratagy = Stratagy.Pass;
     public float AngleCosMax = 0.8f;
     public float BallDistance = 1.5f;
+    public float CurrentSpeed;
+
+    public Vector3 DefaultPosition;
     public float DistanceToBall;
     public float DistanceToGoal;
     public float DistanceToPlayer;
@@ -42,9 +45,7 @@ public class AI : MonoBehaviour
     public Vector3 TargetGoal = 55 * Vector3.back;
     public float Up = 1.0f;
     public float XMax;
-    public float CurrentSpeed;
 
-    public Vector3 DefaultPosition;
     private void Start()
     {
         _ball = GameObject.FindGameObjectWithTag("Football");
@@ -57,7 +58,7 @@ public class AI : MonoBehaviour
     {
         var result = Vector3.zero;
         result[0] = _rnd.Next((int) -XMax, (int) XMax);
-        result[2] = _rnd.Next(-10000, (int)TargetGoal.z);
+        result[2] = _rnd.Next(-10000, (int) TargetGoal.z);
         return result;
     }
 
@@ -65,7 +66,7 @@ public class AI : MonoBehaviour
     {
         pos.y = 0;
         transform.LookAt(pos);
-        transform.position = Vector3.MoveTowards(transform.position, pos,CurrentSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, pos, CurrentSpeed * Time.deltaTime);
         //        var transformForward = pos - gameObject.transform.position;
         //        transformForward.y = 0;
         //        gameObject.transform.forward = transformForward;
@@ -79,7 +80,7 @@ public class AI : MonoBehaviour
 
     private bool ShouldGoal()
     {
-        return DistanceToGoal < ShootDistance ||Mathf.Abs(gameObject.transform.position.y)>40;
+        return DistanceToGoal < ShootDistance || Mathf.Abs(gameObject.transform.position.y) > 40;
     }
 
     private void rotateRigidBodyAroundPointBy(Rigidbody rb, Vector3 origin, Vector3 axis, float angle)
@@ -100,7 +101,7 @@ public class AI : MonoBehaviour
         {
             case Status.Attack:
             {
-                if (DistanceToBall > BallDistance+1.1)
+                if (DistanceToBall > BallDistance + 1.1)
                 {
                     MoveBehind(_tempDestination);
                 }
@@ -110,7 +111,6 @@ public class AI : MonoBehaviour
                         Vector3.Dot(gameObject.transform.forward.normalized,
                             (TargetGoal - gameObject.transform.position).normalized) > AngleCosMax)
                     {
-                       
                         MoveTo(_ball.transform.position);
                     }
                     else
@@ -119,9 +119,9 @@ public class AI : MonoBehaviour
                         var tt = Side == GameManager.Side.Computer ? 1 : -1;
                         var rb = gameObject.GetComponent<Rigidbody>();
                         rotateRigidBodyAroundPointBy(rb, gameObject.transform.position, Vector3.up,
-                            180 * Time.deltaTime * t*tt);
+                            180 * Time.deltaTime * t * tt);
                         rotateRigidBodyAroundPointBy(_ball.GetComponent<Rigidbody>(), gameObject.transform.position,
-                            Vector3.up, 180 * Time.deltaTime * t*tt);
+                            Vector3.up, 180 * Time.deltaTime * t * tt);
                     }
                 }
                 break;
@@ -130,32 +130,27 @@ public class AI : MonoBehaviour
             {
                 var d = GameManager.gm.LastBallTouch == Side ? TargetGoal : -TargetGoal;
 
-                MoveTo(d *0.8f+0.2f*DefaultPosition);
+                MoveTo(d * 0.8f + 0.2f * DefaultPosition);
                 break;
             }
             case Status.Idle:
             {
-                MoveTo(_ball.transform.position);
+                if ((transform.position - DefaultPosition).magnitude > 0.2)
+                    MoveTo(_ball.transform.position);
                 break;
             }
             case Status.Return:
                 if ((transform.position - DefaultPosition).magnitude < 0.1)
-                {
                     status = Status.Idle;
-                }
                 else
-                {
                     MoveTo(DefaultPosition);
-                }
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
         if (DistanceToBall < BallDistance)
-        {
             Kick();
-        }
     }
 
 
@@ -163,9 +158,7 @@ public class AI : MonoBehaviour
     {
         if (GameManager.gm.status == GameManager.GameStatus.OffBorder ||
             GameManager.gm.status == GameManager.GameStatus.Goal)
-        {
-            status=Status.Return;
-        }
+            status = Status.Return;
         DistanceToPlayer =
             (GameObject.FindGameObjectWithTag("Player").transform.position - transform.position).magnitude;
         AiStratagy = ShouldGoal()
@@ -174,6 +167,10 @@ public class AI : MonoBehaviour
         DistanceToGoal = (TargetGoal - gameObject.transform.position).magnitude;
         DistanceToBall = (_ball.transform.position - gameObject.transform.position).magnitude;
         CurrentSpeed = status != Status.Idle ? ActiveSpeed : NonActiveSpeed;
+        if (GameManager.gm.status == GameManager.GameStatus.Wait &&
+            (gameObject != GameManager.gm.AI_Active || Side == GameManager.gm.LastBallTouch))
+            if (status != Status.Idle || status != Status.Return)
+                status = Status.Return;
     }
 
     private void MoveBehind(Vector3 tempDestination)
@@ -187,24 +184,26 @@ public class AI : MonoBehaviour
 
     private void Kick()
     {
+        if (GameManager.gm.status == GameManager.GameStatus.Wait)
+            GameManager.gm.status = GameManager.GameStatus.Running;
         Vector3 kickDirection;
 
         var kickForce = (float) _rnd.NextDouble();
         Vector3 tf;
         switch (AiStratagy)
         {
-		case Stratagy.Goal:
-				kickDirection = (TargetGoal - gameObject.transform.position).normalized;
-				kickDirection [1] = 0.5f;
-				tf = kickDirection * (kickForce + 0.2f) * ShootForce;
-				gameObject.GetComponent<Animation> ().Play ("tiro");
+            case Stratagy.Goal:
+                kickDirection = (TargetGoal - gameObject.transform.position).normalized;
+                kickDirection[1] = 0.5f;
+                tf = kickDirection * (kickForce + 0.2f) * ShootForce;
+                gameObject.GetComponent<Animation>().Play("tiro");
                 break;
             case Stratagy.Shoot:
                 kickDirection = gameObject.transform.forward.normalized;
 
                 kickDirection[1] = 0.2f;
                 tf = kickDirection * (kickForce + 0.2f) * ShootForce;
-				gameObject.GetComponent<Animation> ().Play ("pass");
+                gameObject.GetComponent<Animation>().Play("pass");
                 break;
             default:
                 kickDirection = gameObject.transform.forward;
@@ -213,9 +212,9 @@ public class AI : MonoBehaviour
                 break;
         }
 
-        _ball.GetComponent<Rigidbody>().AddForce(tf,ForceMode.Impulse);
+        _ball.GetComponent<Rigidbody>().AddForce(tf, ForceMode.Impulse);
 
-		GetComponent<AudioSource> ().Play ();
+        GetComponent<AudioSource>().Play();
 
         GameManager.gm.LastBallTouch = Side;
         GetComponent<Rigidbody>().Sleep();

@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
         OffBorder,
         Goal,
         Over,
-        ToStart
+        ToStart,
+        Wait
     }
 
     public enum Side
@@ -172,8 +173,6 @@ public class GameManager : MonoBehaviour
                 break;
             case GameStatus.ToStart:
                 break;
-            case GameStatus.Paused:
-                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -257,7 +256,7 @@ public class GameManager : MonoBehaviour
 
         Football.GetComponent<Rigidbody>().Sleep();
         Player.GetComponent<Rigidbody>().Sleep();
-        newPlayerPos.y = 0.25f;
+        newBallPos.y = 0.25f;
         Football.transform.position = newBallPos;
 
         var lookPos = newPlayerPos - newBallPos;
@@ -266,7 +265,7 @@ public class GameManager : MonoBehaviour
 //        Player.transform.LookAt(newBallPos);
         gm.OffBorder = false;
         _positionOnBorder = Vector3.zero;
-        status = GameStatus.Running;
+        status = GameStatus.Wait;
         OffBorderTimeLeft = 3.0f;
         var sc = Enemies.GetComponent("EnemyManager") as EnemyManager;
         sc.ResetPosition();

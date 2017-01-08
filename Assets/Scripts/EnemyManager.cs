@@ -43,7 +43,7 @@ public class EnemyManager : MonoBehaviour
     private void Update()
     {
         if (GameManager.gm.status == GameManager.GameStatus.OffBorder ||
-            GameManager.gm.status == GameManager.GameStatus.Goal)
+            GameManager.gm.status == GameManager.GameStatus.Goal || GameManager.gm.status == GameManager.GameStatus.Wait)
             return;
         if (remain < 0)
         {

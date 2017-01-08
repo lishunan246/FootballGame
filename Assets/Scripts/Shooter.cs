@@ -47,6 +47,10 @@ public class Shooter : MonoBehaviour
             ball.GetComponent<Rigidbody>().AddForce(f*(_kickForce+baseKickForce)*force);
             GameManager.gm.LastBallTouch=GameManager.Side.Player;
             _kickForce = 0;
+            if (GameManager.gm.status == GameManager.GameStatus.Wait)
+            {
+                GameManager.gm.status = GameManager.GameStatus.Running;
+            }
         }
     }
 
