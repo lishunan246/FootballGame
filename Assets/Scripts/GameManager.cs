@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
         OffBorder,
         Goal,
         Over,
-        ToStart
+        ToStart,
+        Wait
     }
 
     public enum Side
@@ -208,7 +209,7 @@ public class GameManager : MonoBehaviour
                     else//门球
                     {
                         newBallPos=45*Vector3.forward;
-                        OffBorderTimeLeft = 20;
+                        
                     }
                 }
                 else//自己出
@@ -216,7 +217,7 @@ public class GameManager : MonoBehaviour
                     if (LastBallTouch == Side.Computer)//门球
                     {
                         newBallPos = -45 * Vector3.forward;
-                        OffBorderTimeLeft = 20;
+                        
                     }
                     else//角球
                     {
@@ -255,7 +256,7 @@ public class GameManager : MonoBehaviour
 
         Football.GetComponent<Rigidbody>().Sleep();
         Player.GetComponent<Rigidbody>().Sleep();
-        newPlayerPos.y = 0.25f;
+        newBallPos.y = 0.25f;
         Football.transform.position = newBallPos;
 
         var lookPos = newPlayerPos - newBallPos;
@@ -264,7 +265,7 @@ public class GameManager : MonoBehaviour
 //        Player.transform.LookAt(newBallPos);
         gm.OffBorder = false;
         _positionOnBorder = Vector3.zero;
-        status = GameStatus.Running;
+        status = GameStatus.Wait;
         OffBorderTimeLeft = 3.0f;
         var sc = Enemies.GetComponent("EnemyManager") as EnemyManager;
         sc.ResetPosition();
