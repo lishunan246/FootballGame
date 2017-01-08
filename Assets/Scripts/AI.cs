@@ -128,9 +128,9 @@ public class AI : MonoBehaviour
             }
             case Status.Assist:
             {
-                var d = GameManager.gm.LastBallTouch == GameManager.Side.Computer ? TargetGoal : -TargetGoal;
+                var d = GameManager.gm.LastBallTouch == Side ? TargetGoal : -TargetGoal;
 
-                MoveTo(d / 0.6f);
+                MoveTo(d *0.8f+0.2f*DefaultPosition);
                 break;
             }
             case Status.Idle:
@@ -139,7 +139,14 @@ public class AI : MonoBehaviour
                 break;
             }
             case Status.Return:
-                MoveTo(DefaultPosition);
+                if ((transform.position - DefaultPosition).magnitude < 0.1)
+                {
+                    status = Status.Idle;
+                }
+                else
+                {
+                    MoveTo(DefaultPosition);
+                }
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
