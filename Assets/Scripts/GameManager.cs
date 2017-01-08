@@ -64,6 +64,8 @@ public class GameManager : MonoBehaviour
     private Vector3 savedVelocity;
     private Vector3 savedAngularVelocity;
 
+    public float ResumeGameBallDistance = 2.0f;
+
     private void Start()
     {
         RestartButton.onClick.AddListener(RestartGame);
@@ -187,7 +189,7 @@ public class GameManager : MonoBehaviour
         else if (status == GameStatus.OffBorder)
         {
             var d = Vector3.zero - _positionOnBorder;
-            var n = _positionOnBorder + d.normalized;
+            var n = _positionOnBorder + d.normalized*ResumeGameBallDistance;
             n.y = 0.25f;
             newBallPos = n;
             var m = _positionOnBorder - d.normalized * 2;
