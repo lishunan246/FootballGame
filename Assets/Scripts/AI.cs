@@ -89,6 +89,8 @@ public class AI : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
+        if (GameManager.gm.status == GameManager.GameStatus.Paused)
+            return;
         UpdateStatus();
 
         switch (status)
