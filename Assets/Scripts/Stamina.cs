@@ -10,12 +10,12 @@ public class Stamina : MonoBehaviour
     public Slider StaminaBarSlider;
     public float TimeToConsume = 5;
     public float TimeToRecover = 10;
-    private RigidbodyFirstPersonController controller;
+	private RigidbodyController controller;
     private float defaultspeed;
     // Use this for initialization
     void Start ()
 	{
-        controller = gameObject.GetComponent("RigidbodyController") as RigidbodyFirstPersonController;
+		controller = gameObject.GetComponent("RigidbodyController") as RigidbodyController;
 	    StaminaBarSlider.value = 1.0f;
 	    defaultspeed = controller.movementSettings.ForwardSpeed;
 	}
