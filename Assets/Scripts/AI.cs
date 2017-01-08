@@ -195,13 +195,13 @@ public class AI : MonoBehaviour
             case Stratagy.Shoot:
                 kickDirection = gameObject.transform.forward.normalized;
 
-                kickDirection[1] = 0.5f;
+                kickDirection[1] = 0.2f;
                 tf = kickDirection * (kickForce + 0.2f) * ShootForce;
 				gameObject.GetComponent<Animation> ().Play ("pass");
                 break;
             default:
                 kickDirection = gameObject.transform.forward;
-                kickDirection[1] = 0.5f;
+                kickDirection[1] = 0.2f;
                 tf = kickDirection * 1.0f * PassForce;
                 break;
         }
