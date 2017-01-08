@@ -60,34 +60,36 @@ public class opponent : MonoBehaviour {
 
 		float speed = gameObject.GetComponent<Rigidbody> ().velocity.magnitude;
 
-
-		switch (state) {
-		case AI.Status.Idle:
-			if (!GetComponent<Animation> ().IsPlaying ("defenderIdle")) {
-				GetComponent<Animation> ().Play ("defenderIdle");
+		if (!GetComponent<Animation> ().IsPlaying ("tiro") && !GetComponent<Animation> ().IsPlaying ("pass")) {
+			switch (state) {
+			case AI.Status.Idle:
+				if (!GetComponent<Animation> ().IsPlaying ("defenderIdle")) {
+					GetComponent<Animation> ().Play ("defenderIdle");
+				}
+				break;
+			case AI.Status.Attack:
+				if (!GetComponent<Animation> ().IsPlaying ("run")) {
+					//GetComponent<Animation>()["run"].speed = speed*0.3f;
+					GetComponent<Animation> ().Play ("run");
+				}
+				break;
+			case AI.Status.Assist:
+				if (!GetComponent<Animation> ().IsPlaying ("run")) {
+					//GetComponent<Animation>()["run"].speed = speed*0.3f;
+					GetComponent<Animation> ().Play ("run");
+				}
+				break;
+			case AI.Status.Return:
+				if (!GetComponent<Animation>().IsPlaying("run"))
+				{
+					//GetComponent<Animation>()["run"].speed = speed*0.3f;
+					GetComponent<Animation>().Play("run");
+				}
+				break;
+			default:
+				throw new ArgumentOutOfRangeException();
 			}
-			break;
-		case AI.Status.Attack:
-			if (!GetComponent<Animation> ().IsPlaying ("run")) {
-				//GetComponent<Animation>()["run"].speed = speed*0.3f;
-				GetComponent<Animation> ().Play ("run");
-			}
-			break;
-		case AI.Status.Assist:
-			if (!GetComponent<Animation> ().IsPlaying ("run")) {
-				//GetComponent<Animation>()["run"].speed = speed*0.3f;
-				GetComponent<Animation> ().Play ("run");
-			}
-			break;
-		    case AI.Status.Return:
-                if (!GetComponent<Animation>().IsPlaying("run"))
-                {
-                    //GetComponent<Animation>()["run"].speed = speed*0.3f;
-                    GetComponent<Animation>().Play("run");
-                }
-                break;
-		    default:
-		        throw new ArgumentOutOfRangeException();
 		}
+
 	}
 }

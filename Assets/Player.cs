@@ -28,14 +28,14 @@ public class Player : MonoBehaviour {
 		if (Input.GetButton ("Vertical")) {
 			if (Input.GetAxis("Vertical")>0) {
 				if (state != Player_State.RUNNING) {
-					GetComponent<Animation> ().Stop ();
+//					GetComponent<Animation> ().Stop ();
 					state = Player_State.RUNNING;
 				}
 
 			} 
 			if(Input.GetAxis("Vertical")<0){
 				if (state != Player_State.RETREATING) {
-					GetComponent<Animation> ().Stop ();
+//					GetComponent<Animation> ().Stop ();
 					state = Player_State.RETREATING;
 				}
 
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour {
 			if (speed < 2.0f) {
 				state = Player_State.RESTING;
 				if (state == Player_State.RUNNING || state == Player_State.RETREATING) {
-					GetComponent<Animation> ().Stop ();
+//					GetComponent<Animation> ().Stop ();
 				}
 			}
 		}

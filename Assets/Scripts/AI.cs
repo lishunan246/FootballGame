@@ -186,16 +186,18 @@ public class AI : MonoBehaviour
         Vector3 tf;
         switch (AiStratagy)
         {
-            case Stratagy.Goal:
-                kickDirection = (TargetGoal - gameObject.transform.position).normalized;
-                kickDirection[1] = 0.5f;
-                tf = kickDirection * (kickForce + 0.2f) * ShootForce;
+		case Stratagy.Goal:
+				kickDirection = (TargetGoal - gameObject.transform.position).normalized;
+				kickDirection [1] = 0.5f;
+				tf = kickDirection * (kickForce + 0.2f) * ShootForce;
+				gameObject.GetComponent<Animation> ().Play ("tiro");
                 break;
             case Stratagy.Shoot:
                 kickDirection = gameObject.transform.forward.normalized;
 
                 kickDirection[1] = 0.5f;
                 tf = kickDirection * (kickForce + 0.2f) * ShootForce;
+				gameObject.GetComponent<Animation> ().Play ("pass");
                 break;
             default:
                 kickDirection = gameObject.transform.forward;

@@ -41,6 +41,9 @@ public class Shooter : MonoBehaviour
 
             f[1] = up;
 
+			if (_kickForce > 0) {
+				gameObject.GetComponent<Animation> ().Play ("tiro");
+			}
             ball.GetComponent<Rigidbody>().AddForce(f*(_kickForce+baseKickForce)*force);
             GameManager.gm.LastBallTouch=GameManager.Side.Player;
             _kickForce = 0;
