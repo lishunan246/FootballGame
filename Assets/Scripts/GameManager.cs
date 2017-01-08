@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public enum GameStatus
     {
+        Paused,
         Running,
         OffBorder,
         Goal,
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     }
 
     // make game manager public static so can access this from other scripts
+
     public static GameManager gm;
     public GameObject AI_Active;
     public int ComputerScore;
@@ -53,9 +55,20 @@ public class GameManager : MonoBehaviour
     private Vector3 _positionOnBorder = Vector3.zero;
     public float startTime = 5.0f;
     public GameStatus status;
+    public Button ResumeButton;
+    public Button QuitButton;
+    public Button RestartButton;
     // setup the game
+    public GameObject OnGameUI;
+    public GameObject OutGameUI;
+    private Vector3 savedVelocity;
+    private Vector3 savedAngularVelocity;
+
     private void Start()
     {
+        RestartButton.onClick.AddListener(RestartGame);
+        QuitButton.onClick.AddListener(Application.Quit);
+        ResumeButton.onClick.AddListener(UnPauseGame);
         // set the current time to the startTime specified
         currentTime = startTime;
 
@@ -77,6 +90,28 @@ public class GameManager : MonoBehaviour
         // inactivate the nextLevelButtons gameObject, if it is set
         if (nextLevelButtons)
             nextLevelButtons.SetActive(false);
+    }
+
+    private void PauseGame()
+    {
+        var rb = Football.GetComponent<Rigidbody>();
+        savedVelocity = rb.velocity;
+        savedAngularVelocity = rb.angularVelocity;
+        rb.isKinematic = true;
+        OnGameUI.SetActive(false);
+        OutGameUI.SetActive(true);
+        status=GameStatus.Paused;
+    }
+
+    void UnPauseGame()
+    {
+        var rb = Football.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.AddForce(savedVelocity, ForceMode.VelocityChange);
+        rb.AddTorque(savedAngularVelocity, ForceMode.VelocityChange);
+        OnGameUI.SetActive(true);
+        OutGameUI.SetActive(false);
+        status = GameStatus.Running;
     }
 
     // this is the main game event loop
@@ -118,6 +153,10 @@ public class GameManager : MonoBehaviour
                     currentTime -= Time.deltaTime;
                     mainTimerDisplay.text = currentTime.ToString("0.00");
                     mainScoreDisplay.text = PlayerScore + ":" + ComputerScore;
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        PauseGame();
+                    }
                 }
                 break;
             case GameStatus.OffBorder:
@@ -126,6 +165,12 @@ public class GameManager : MonoBehaviour
                 if (OffBorderTimeLeft < 0)
                     ResumeGame();
                 break;
+            case GameStatus.Over:
+                break;
+            case GameStatus.ToStart:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
