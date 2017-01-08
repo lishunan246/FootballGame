@@ -66,6 +66,9 @@ public class GameManager : MonoBehaviour
     private Vector3 savedVelocity;
     private Vector3 savedAngularVelocity;
 
+    public GameObject ComGoalKeeper;
+    public GameObject PlayerGoalKeeper;
+
     public float ResumeGameBallDistance = 2.0f;
 
     private void Start()
@@ -209,7 +212,8 @@ public class GameManager : MonoBehaviour
                     else//门球
                     {
                         newBallPos=45*Vector3.forward;
-                        
+                        var t = ComGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
+                        t.state = GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
                     }
                 }
                 else//自己出
@@ -217,7 +221,8 @@ public class GameManager : MonoBehaviour
                     if (LastBallTouch == Side.Computer)//门球
                     {
                         newBallPos = -45 * Vector3.forward;
-                        
+                        var t = PlayerGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
+                        t.state=GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
                     }
                     else//角球
                     {
