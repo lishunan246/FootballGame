@@ -176,6 +176,10 @@ public class GameManager : MonoBehaviour
                 break;
             case GameStatus.ToStart:
                 break;
+            case GameStatus.Paused:
+                break;
+            case GameStatus.Wait:
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }

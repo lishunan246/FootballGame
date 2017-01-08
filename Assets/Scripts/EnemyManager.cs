@@ -86,7 +86,14 @@ public class EnemyManager : MonoBehaviour
                         s.status = AI.Status.Attack;
                 }
             }
-            else if (i < 3)
+            else if(i==1)
+            {
+                if (GameManager.gm.LastBallTouch==Side)
+                    s.status = AI.Status.Assist;
+                else
+                    s.status = AI.Status.Attack;
+            }
+            else if (i ==2)
             {
                 Debug.Assert(s != null, "s != null");
                 s.status = AI.Status.Assist;
