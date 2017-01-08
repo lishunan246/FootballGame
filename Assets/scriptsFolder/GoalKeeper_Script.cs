@@ -18,7 +18,8 @@ public class GoalKeeper_Script : MonoBehaviour {
 	   JUMP_RIGHT,
 	   JUMP_LEFT_HIGH,
 	   JUMP_RIGHT_HIGH,
-		MOVE_TO_RESTING
+		MOVE_TO_RESTING,
+		KICK_BALL
 	};
 	
 	public GoalKeeper_State state;
@@ -73,48 +74,48 @@ public class GoalKeeper_Script : MonoBehaviour {
 
 			/*This is the same concept as the state above
 			 */ 
-		case GoalKeeper_State.JUMP_LEFT:
+			case GoalKeeper_State.JUMP_LEFT:
 
-			capsuleCollider.direction = 0;
-			if (GetComponent<Animation>()["playerDiveLeftLow"].normalizedTime < 0.45f)
-			{
-				transform.position -= transform.right * Time.deltaTime * 7.0f;
-			}
-
-			if (!GetComponent<Animation>().IsPlaying("playerDiveLeftLow"))
-			{
-				state = GoalKeeper_State.JUMP_LEFT; //resting
-				capsuleCollider.direction = 1;
-				/*For some reason after diving to the bottom left, the keeeper would not enter the MOVE_TO_RESTING 
-				 * state where he walks back to his original starting position. I dont know why. To fix this, I created 
-				 * a method called "ReturnToRestState" that automatically sets the keepers state to that state after he has dived 
-				 * to the left. Its called via the StartCoroutine function below. It solved the issue
-				 */
-				StartCoroutine("ReturnToRestState");
-			}
-			break;
-			
-		case GoalKeeper_State.JUMP_LEFT_HIGH:
-				
 				capsuleCollider.direction = 0;
-			
-				if (GetComponent<Animation>()["playerDiveLeftHigh"].normalizedTime < 0.45f)
+				if (GetComponent<Animation>()["playerDiveLeftLow"].normalizedTime < 0.45f)
 				{
-					transform.position -= transform.right * Time.deltaTime * 4.0f;
+					transform.position -= transform.right * Time.deltaTime * 7.0f;
 				}
-				
-				if (!GetComponent<Animation>().IsPlaying("playerDiveLeftHigh"))
-				{
-					state = GoalKeeper_State.JUMP_LEFT;
-					capsuleCollider.direction = 1;
 
+				if (!GetComponent<Animation>().IsPlaying("playerDiveLeftLow"))
+				{
+					state = GoalKeeper_State.JUMP_LEFT; //resting
+					capsuleCollider.direction = 1;
+					/*For some reason after diving to the bottom left, the keeeper would not enter the MOVE_TO_RESTING 
+					 * state where he walks back to his original starting position. I dont know why. To fix this, I created 
+					 * a method called "ReturnToRestState" that automatically sets the keepers state to that state after he has dived 
+					 * to the left. Its called via the StartCoroutine function below. It solved the issue
+					 */
+					StartCoroutine("ReturnToRestState");
 				}
-			break;
-	
+				break;
+				
+			case GoalKeeper_State.JUMP_LEFT_HIGH:
+					
+					capsuleCollider.direction = 0;
+				
+					if (GetComponent<Animation>()["playerDiveLeftHigh"].normalizedTime < 0.45f)
+					{
+						transform.position -= transform.right * Time.deltaTime * 4.0f;
+					}
+					
+					if (!GetComponent<Animation>().IsPlaying("playerDiveLeftHigh"))
+					{
+						state = GoalKeeper_State.JUMP_LEFT;
+						capsuleCollider.direction = 1;
+
+					}
+				break;
+		
 			case GoalKeeper_State.JUMP_RIGHT_HIGH:
 
 				capsuleCollider.direction = 0;
-	
+
 				if (GetComponent<Animation>()["playerDiveRightLow"].normalizedTime < 0.45f)
 				{
 					transform.position += transform.right * Time.deltaTime * 4.0f;
@@ -126,52 +127,53 @@ public class GoalKeeper_Script : MonoBehaviour {
 				}
 			break;
 
-			/*This state is active just after the keepr has dived. After diving, he is now out of position and must 
-			 * move back to his original standing position. After he has finished diving, the keeper moves to his 
-			 * starting spot which is stored in the initial_Position variable. While doing so he always looks at the 
-			 * player so if the player takes their next shot fast, the goalkeepers is ready to make a save.
-			 */
-		case GoalKeeper_State.MOVE_TO_RESTING:
+				/*This state is active just after the keepr has dived. After diving, he is now out of position and must 
+				 * move back to his original standing position. After he has finished diving, the keeper moves to his 
+				 * starting spot which is stored in the initial_Position variable. While doing so he always looks at the 
+				 * player so if the player takes their next shot fast, the goalkeepers is ready to make a save.
+				 */
+			case GoalKeeper_State.MOVE_TO_RESTING:
 
-			capsuleCollider.direction = 1; //Resets the capsule collider to be vertical
-			if (!GetComponent<Animation> ().IsPlaying ("Move_Sideways")) {
-				GetComponent<Animation> ().Play ("Move_Sideways");
-			}
-			if (player) {
-				transform.LookAt(new Vector3(player.transform.position.x, transform.position.y , player.transform.position.z)); //face the player
-			}
+				capsuleCollider.direction = 1; //Resets the capsule collider to be vertical
+				if (!GetComponent<Animation> ().IsPlaying ("Move_Sideways")) {
+					GetComponent<Animation> ().Play ("Move_Sideways");
+				}
+				if (player) {
+					transform.LookAt(new Vector3(player.transform.position.x, transform.position.y , player.transform.position.z)); //face the player
+				}
 
-			transform.position = Vector3.MoveTowards(transform.position, initial_Position, Time.deltaTime); //move back to starting position
+				transform.position = Vector3.MoveTowards(transform.position, initial_Position, Time.deltaTime); //move back to starting position
 
-			/*Once the keeper reaches his starting position, he changes his state to RESTING as he doesnt need to move
-			 * any further
-			 */
-			if(Vector3.Distance(transform.position, initial_Position) < 0.2f)
-			{
-				state = GoalKeeper_State.RESTING;
-			}
-			break;
-					
-			/*THis is the goalkeeper idle state. He faces the player and stays still in this state.
-			 */
-		case GoalKeeper_State.RESTING:
-			
-			capsuleCollider.direction = 1;
-			if (!GetComponent<Animation> ().IsPlaying ("playerIdle"))
-				GetComponent<Animation> ().Play ("playerIdle");
-			if (player) {
-				transform.LookAt( new Vector3( player.transform.position.x, transform.position.y , player.transform.position.z)  );
-			}
+				/*Once the keeper reaches his starting position, he changes his state to RESTING as he doesnt need to move
+				 * any further
+				 */
+				if(Vector3.Distance(transform.position, initial_Position) < 0.2f)
+				{
+					state = GoalKeeper_State.RESTING;
+				}
+				break;
+						
+				/*THis is the goalkeeper idle state. He faces the player and stays still in this state.
+				 */
+			case GoalKeeper_State.RESTING:
 				
+				capsuleCollider.direction = 1;
+				if (!GetComponent<Animation> ().IsPlaying ("playerIdle"))
+					GetComponent<Animation> ().Play ("playerIdle");
+				if (player) {
+					transform.LookAt( new Vector3( player.transform.position.x, transform.position.y , player.transform.position.z)  );
+				}
+					
+				
+					float distanceBall = (transform.position - sphere.transform.position).magnitude;
 			
-				float distanceBall = (transform.position - sphere.transform.position).magnitude;
-		
-				if ( distanceBall < 10.0f ) {
-					state = GoalKeeper_Script.GoalKeeper_State.RESTING;
-				//come back to thus
-				} 
-			break;
-		}
+					if ( distanceBall < 10.0f ) {
+						state = GoalKeeper_Script.GoalKeeper_State.RESTING;
+					//come back to thus
+					} 
+				break;
+
+			}
 	}
 
 	/*Sets the keepers state to MOVE_TO_RESTING
