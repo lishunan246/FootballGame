@@ -14,31 +14,34 @@ public class AI : MonoBehaviour
     public enum Stratagy
     {
         Pass,
-        Shoot
+        Shoot,
+        Goal
     }
 
     // Use this for initialization
-    private readonly Random rnd = new Random();
+    private readonly Random _rnd = new Random();
 
     private GameObject _ball;
-    private bool _needRotate;
+    
     private Vector3 _tempDestination;
     public float ActiveSpeed = 3.0f;
-    public Stratagy AI_Stratagy = Stratagy.Pass;
+    public Stratagy AiStratagy = Stratagy.Pass;
     public float AngleCosMax = 0.8f;
     public float BallDistance = 1.5f;
-    public float distanceToGoal;
-    public float distanceToPlayer;
+    public float DistanceToBall;
+    public float DistanceToGoal;
+    public float DistanceToPlayer;
     public float NonActiveSpeed = 0.3f;
     public float PassDistance = 10.0f;
-    public float PassForce = 10.0f;
+    public float PassForce = 3.0f;
     public float ShootDistance = 20.0f;
-    public float ShootForce = 300.0f;
-    public GameManager.Side side = GameManager.Side.Computer;
+    public float ShootForce = 20.0f;
+    public GameManager.Side Side = GameManager.Side.Computer;
     public Status status = Status.Idle;
     public Vector3 TargetGoal = 55 * Vector3.back;
-    public float up = 1.0f;
-    public float X_MAX;
+    public float Up = 1.0f;
+    public float XMax;
+    public float CurrentSpeed;
 
     private void Start()
     {
@@ -50,29 +53,30 @@ public class AI : MonoBehaviour
     private Vector3 GetDestination()
     {
         var result = Vector3.zero;
-        result[0] = rnd.Next((int) -X_MAX, (int) X_MAX);
-        result[2] = rnd.Next(-10000, -55);
+        result[0] = _rnd.Next((int) -XMax, (int) XMax);
+        result[2] = _rnd.Next(-10000, (int)TargetGoal.z);
         return result;
-    }
-
-    private float DistanceToBall()
-    {
-        return (_ball.transform.position - gameObject.transform.position).magnitude;
     }
 
     private void MoveTo(Vector3 pos)
     {
-        var transformForward = pos - gameObject.transform.position;
-        transformForward.y = 0;
-        gameObject.transform.forward = transformForward;
-        var rb = gameObject.GetComponent<Rigidbody>();
-        var sp = status != Status.Idle ? ActiveSpeed : NonActiveSpeed;
-        rb.MovePosition(gameObject.transform.position + transformForward.normalized * sp * Time.deltaTime);
+        pos.y = 0;
+        transform.LookAt(pos);
+        transform.position = Vector3.MoveTowards(transform.position, pos,CurrentSpeed * Time.deltaTime);
+        //        var transformForward = pos - gameObject.transform.position;
+        //        transformForward.y = 0;
+        //        gameObject.transform.forward = transformForward;
+        //        var rb = GetComponent<Rigidbody>();
+        //        //Quaternion q=Quaternion.FromToRotation(transform.forward,transformForward);
+        //        //gameObject.transform.LookAt(pos);
+        //        //rb.MoveRotation(q);
+        //        
+        //        rb.MovePosition(gameObject.transform.position + transformForward.normalized * sp * Time.deltaTime);
     }
 
-    private bool NearTargetGoal()
+    private bool ShouldGoal()
     {
-        return distanceToGoal < ShootDistance;
+        return DistanceToGoal < ShootDistance ||Mathf.Abs(gameObject.transform.position.y)>45;
     }
 
     private void rotateRigidBodyAroundPointBy(Rigidbody rb, Vector3 origin, Vector3 axis, float angle)
@@ -83,28 +87,25 @@ public class AI : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    private void FixedUpdate()
     {
-        distanceToPlayer =
-            (GameObject.FindGameObjectWithTag("Player").transform.position - transform.position).magnitude;
-        AI_Stratagy = distanceToPlayer < PassDistance ? Stratagy.Shoot : Stratagy.Pass;
-        distanceToGoal = (TargetGoal - gameObject.transform.position).magnitude;
+        UpdateStatus();
 
         switch (status)
         {
             case Status.Attack:
             {
-                if (DistanceToBall() > BallDistance + 0.2)
+                if (DistanceToBall > BallDistance+1.1)
                 {
                     MoveBehind(_tempDestination);
                 }
                 else
                 {
-                    if (NearTargetGoal() ||
+                    if (ShouldGoal() ||
                         Vector3.Dot(gameObject.transform.forward.normalized,
                             (TargetGoal - gameObject.transform.position).normalized) > AngleCosMax)
                     {
-                        _needRotate = true;
+                       
                         MoveTo(_ball.transform.position);
                     }
                     else
@@ -123,7 +124,7 @@ public class AI : MonoBehaviour
             {
                 var d = GameManager.gm.LastBallTouch == GameManager.Side.Computer ? TargetGoal : -TargetGoal;
 
-                MoveTo(d / 0.8f);
+                MoveTo(d / 0.6f);
                 break;
             }
             case Status.Idle:
@@ -134,48 +135,63 @@ public class AI : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        if (DistanceToBall < BallDistance)
+        {
+            Kick();
+        }
+    }
+
+    private void UpdateStatus()
+    {
+        DistanceToPlayer =
+            (GameObject.FindGameObjectWithTag("Player").transform.position - transform.position).magnitude;
+        AiStratagy = ShouldGoal()
+            ? Stratagy.Goal
+            : (DistanceToPlayer < PassDistance ? Stratagy.Shoot : Stratagy.Pass);
+        DistanceToGoal = (TargetGoal - gameObject.transform.position).magnitude;
+        DistanceToBall = (_ball.transform.position - gameObject.transform.position).magnitude;
+        CurrentSpeed = status != Status.Idle ? ActiveSpeed : NonActiveSpeed;
     }
 
     private void MoveBehind(Vector3 tempDestination)
     {
-        var d = _tempDestination - _ball.transform.position;
+        var d = tempDestination - _ball.transform.position;
         d.y = 0;
 
         var des = _ball.transform.position - d.normalized * BallDistance;
         MoveTo(des);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void Kick()
     {
-        if (collision.gameObject.CompareTag("Football"))
+        Vector3 kickDirection;
+
+        var kickForce = (float) _rnd.NextDouble();
+        Vector3 tf;
+        switch (AiStratagy)
         {
-            _ball = collision.gameObject;
-            var distance = (_ball.transform.position - gameObject.transform.position).magnitude;
-
-            var kickDirection = gameObject.transform.forward;
-
-            kickDirection[1] = up;
-            var kickForce = (float) rnd.NextDouble();
-            Vector3 tf;
-            if (distanceToGoal < ShootDistance)
-            {
+            case Stratagy.Goal:
                 kickDirection = (TargetGoal - gameObject.transform.position).normalized;
-                kickDirection[1] = up;
+                kickDirection[1] = 0.5f;
                 tf = kickDirection * (kickForce + 0.2f) * ShootForce;
-            }
-            else if (AI_Stratagy == Stratagy.Shoot)
-            {
+                break;
+            case Stratagy.Shoot:
+                kickDirection = gameObject.transform.forward.normalized;
+
+                kickDirection[1] = 0.5f;
                 tf = kickDirection * (kickForce + 0.2f) * ShootForce;
-            }
-            else
-            {
+                break;
+            default:
+                kickDirection = gameObject.transform.forward;
                 kickDirection[1] = 0.5f;
                 tf = kickDirection * 1.0f * PassForce;
-            }
-
-            _ball.GetComponent<Rigidbody>().AddForce(tf);
-            GameManager.gm.LastBallTouch = side;
-            _tempDestination = GetDestination();
+                break;
         }
+
+        _ball.GetComponent<Rigidbody>().AddForce(tf,ForceMode.Impulse);
+        GameManager.gm.LastBallTouch = Side;
+        GetComponent<Rigidbody>().Sleep();
+        _tempDestination = GetDestination();
     }
 }
