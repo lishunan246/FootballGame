@@ -172,6 +172,8 @@ public class GameManager : MonoBehaviour
                 break;
             case GameStatus.ToStart:
                 break;
+            case GameStatus.Paused:
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -208,7 +210,7 @@ public class GameManager : MonoBehaviour
                     else//门球
                     {
                         newBallPos=45*Vector3.forward;
-                        OffBorderTimeLeft = 20;
+                        
                     }
                 }
                 else//自己出
@@ -216,7 +218,7 @@ public class GameManager : MonoBehaviour
                     if (LastBallTouch == Side.Computer)//门球
                     {
                         newBallPos = -45 * Vector3.forward;
-                        OffBorderTimeLeft = 20;
+                        
                     }
                     else//角球
                     {
