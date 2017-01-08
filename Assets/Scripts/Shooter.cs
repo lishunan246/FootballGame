@@ -20,7 +20,7 @@ public class Shooter : MonoBehaviour
     public Vector3 preForward = new Vector3(0.0f,0.0f,0.0f);
 
     //stop ball
-    public float stopHeight = 0.28f;
+    public float stopHeight = 0.05f;
 
     // Reference to projectile prefab to shoot
     public GameObject projectile;

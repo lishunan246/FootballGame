@@ -10,9 +10,10 @@ public class EnemyManager : MonoBehaviour
     private float[] _distanceToBall;
     public GameObject AiPrefab;
     public GameObject Football;
-
     public float period = 2.0f;
     private float remain = 2.0f;
+    public GameManager.Side Side;
+
     private void Start()
     {
         _aiList = new GameObject[transform.childCount];
@@ -43,9 +44,7 @@ public class EnemyManager : MonoBehaviour
     {
         if (GameManager.gm.status == GameManager.GameStatus.OffBorder ||
             GameManager.gm.status == GameManager.GameStatus.Goal)
-        {
             return;
-        }
         if (remain < 0)
         {
             UpdateAIPosition();
@@ -55,7 +54,6 @@ public class EnemyManager : MonoBehaviour
         {
             remain -= Time.deltaTime;
         }
-
     }
 
     private void UpdateAIPosition()
@@ -74,10 +72,21 @@ public class EnemyManager : MonoBehaviour
             if (i == 0)
             {
                 Debug.Assert(s != null, "s != null");
-                GameManager.gm.AI_Active = s.gameObject;
-                s.status = AI.Status.Attack;
+                if (Side == GameManager.Side.Computer)
+                {
+                    GameManager.gm.AI_Active = s.gameObject;
+                    s.status = AI.Status.Attack;
+                }
+                else
+                {
+                    if ((GameManager.gm.Player.transform.position - Football.transform.position).magnitude <
+                        (s.transform.position - Football.transform.position).magnitude)
+                        s.status = AI.Status.Assist;
+                    else
+                        s.status = AI.Status.Attack;
+                }
             }
-            else if (i == 1)
+            else if (i < 3)
             {
                 Debug.Assert(s != null, "s != null");
                 s.status = AI.Status.Assist;

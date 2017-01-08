@@ -64,6 +64,8 @@ public class GameManager : MonoBehaviour
     private Vector3 savedVelocity;
     private Vector3 savedAngularVelocity;
 
+    public float ResumeGameBallDistance = 2.0f;
+
     private void Start()
     {
         RestartButton.onClick.AddListener(RestartGame);
@@ -186,8 +188,37 @@ public class GameManager : MonoBehaviour
         }
         else if (status == GameStatus.OffBorder)
         {
+            var z = _positionOnBorder.z;
+            if (Mathf.Abs(z) > 54) //出底线
+            {
+                if (z > 0)//出对面
+                {
+                    if (LastBallTouch == Side.Computer)//角球
+                    {
+                        _positionOnBorder.x = _positionOnBorder.x > 0 ? 37 : -37;
+
+                    }
+                    else//门球
+                    {
+                        
+                    }
+                }
+                else//自己出
+                {
+                    if (LastBallTouch == Side.Computer)//门球
+                    {
+
+                    }
+                    else//角球
+                    {
+                        _positionOnBorder.x = _positionOnBorder.x > 0 ? 37 : -37;
+                    }
+                } 
+            }
             var d = Vector3.zero - _positionOnBorder;
-            var n = _positionOnBorder + d.normalized;
+
+            
+            var n = _positionOnBorder + d.normalized*ResumeGameBallDistance;
             n.y = 0.25f;
             newBallPos = n;
             var m = _positionOnBorder - d.normalized * 2;
