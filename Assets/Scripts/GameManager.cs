@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
         if (status == GameStatus.Goal)
         {
             newBallPos = 0.25f * Vector3.up;
-            newPlayerPos = new Vector3(0, 1, -3);
+            newPlayerPos = new Vector3(0, 0, -3);
             Player.transform.position = newPlayerPos;
         }
         else if (status == GameStatus.OffBorder)
@@ -157,6 +157,7 @@ public class GameManager : MonoBehaviour
                 }
                 case Side.Computer:
                 {
+                    newPlayerPos.y = 0;
                     Player.transform.position = newPlayerPos;
                     break;
                 }
