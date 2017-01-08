@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GoalDetect : MonoBehaviour {
-   public enum Side
-    {
-        Player,
-        Computer
-    }
-
-    public Side side;
+//   public enum Side
+//    {
+//        Player,
+//        Computer
+//    }
+//
+//    public Side side;
 
 	// Use this for initialization
 	void Start () {
@@ -18,22 +18,10 @@ public class GoalDetect : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (GameManager.gm.status == GameManager.GameStatus.Goal) {
+			if (!GetComponent<AudioSource> ().isPlaying) {
+				GetComponent<AudioSource> ().Play ();
+			}
+		}
 	}
-
-    void OnCollisionEnter(Collision col)
-    {
-        var obj = col.gameObject;
-        if (obj.tag == "Football")
-        {
-            if (side == Side.Computer)
-            {
-                GameManager.gm.PlayerScore++;
-            }
-            else if(side==Side.Player)
-            {
-                GameManager.gm.ComputerScore++;
-            }
-        }
-    }
 }

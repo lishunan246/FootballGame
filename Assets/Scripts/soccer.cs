@@ -25,7 +25,7 @@ public class soccer : MonoBehaviour
 
 	void OnCollisionEnter(Collision col)
 	{
-		if (col.collider.transform.gameObject.name=="Player")
+		if (col.collider.transform.gameObject.tag=="Player"||col.collider.transform.gameObject.tag=="Enemy")
 		{
 			GetComponent<AudioSource> ().Play ();
 		}

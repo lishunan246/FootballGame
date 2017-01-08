@@ -21,7 +21,7 @@ public class PlaySaveSound : MonoBehaviour {
 	 */
 	void OnTriggerEnter(Collider other)
 	{
-		if(other.gameObject.tag == "Ball")
+		if(other.gameObject.tag == "Football")
 		{
 			audioSource.GetComponent<AudioSource>().PlayOneShot(saveSound, 1.0f);
 		}

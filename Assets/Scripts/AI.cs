@@ -207,6 +207,9 @@ public class AI : MonoBehaviour
         }
 
         _ball.GetComponent<Rigidbody>().AddForce(tf,ForceMode.Impulse);
+
+		GetComponent<AudioSource> ().Play ();
+
         GameManager.gm.LastBallTouch = Side;
         GetComponent<Rigidbody>().Sleep();
         _tempDestination = GetDestination();
