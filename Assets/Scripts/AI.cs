@@ -33,9 +33,9 @@ public class AI : MonoBehaviour
     public float DistanceToPlayer;
     public float NonActiveSpeed = 0.3f;
     public float PassDistance = 10.0f;
-    public float PassForce = 145.0f;
+    public float PassForce = 3.0f;
     public float ShootDistance = 20.0f;
-    public float ShootForce = 500.0f;
+    public float ShootForce = 20.0f;
     public GameManager.Side Side = GameManager.Side.Computer;
     public Status status = Status.Idle;
     public Vector3 TargetGoal = 55 * Vector3.back;
@@ -60,7 +60,7 @@ public class AI : MonoBehaviour
 
     private void MoveTo(Vector3 pos)
     {
-        pos.y = 1;
+        pos.y = 0;
         transform.LookAt(pos);
         transform.position = Vector3.MoveTowards(transform.position, pos,CurrentSpeed * Time.deltaTime);
         //        var transformForward = pos - gameObject.transform.position;
@@ -74,9 +74,9 @@ public class AI : MonoBehaviour
         //        rb.MovePosition(gameObject.transform.position + transformForward.normalized * sp * Time.deltaTime);
     }
 
-    private bool NearTargetGoal()
+    private bool ShouldGoal()
     {
-        return DistanceToGoal < ShootDistance;
+        return DistanceToGoal < ShootDistance ||Mathf.Abs(gameObject.transform.position.y)>45;
     }
 
     private void rotateRigidBodyAroundPointBy(Rigidbody rb, Vector3 origin, Vector3 axis, float angle)
@@ -101,7 +101,7 @@ public class AI : MonoBehaviour
                 }
                 else
                 {
-                    if (NearTargetGoal() ||
+                    if (ShouldGoal() ||
                         Vector3.Dot(gameObject.transform.forward.normalized,
                             (TargetGoal - gameObject.transform.position).normalized) > AngleCosMax)
                     {
@@ -146,7 +146,7 @@ public class AI : MonoBehaviour
     {
         DistanceToPlayer =
             (GameObject.FindGameObjectWithTag("Player").transform.position - transform.position).magnitude;
-        AiStratagy = NearTargetGoal()
+        AiStratagy = ShouldGoal()
             ? Stratagy.Goal
             : (DistanceToPlayer < PassDistance ? Stratagy.Shoot : Stratagy.Pass);
         DistanceToGoal = (TargetGoal - gameObject.transform.position).magnitude;
@@ -189,7 +189,7 @@ public class AI : MonoBehaviour
                 break;
         }
 
-        _ball.GetComponent<Rigidbody>().AddForce(tf);
+        _ball.GetComponent<Rigidbody>().AddForce(tf,ForceMode.Impulse);
         GameManager.gm.LastBallTouch = Side;
         GetComponent<Rigidbody>().Sleep();
         _tempDestination = GetDestination();

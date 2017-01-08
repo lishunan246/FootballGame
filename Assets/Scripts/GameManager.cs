@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
             n.y = 0.25f;
             newBallPos = n;
             var m = _positionOnBorder - d.normalized * 2;
-            m.y = 1;
+            m.y = 0;
             newPlayerPos = m;
             switch (gm.LastBallTouch)
             {
