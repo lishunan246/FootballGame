@@ -15,7 +15,7 @@ public class Stamina : MonoBehaviour
     // Use this for initialization
     void Start ()
 	{
-        controller = gameObject.GetComponent("RigidbodyFirstPersonController") as RigidbodyFirstPersonController;
+        controller = gameObject.GetComponent("RigidbodyController") as RigidbodyFirstPersonController;
 	    StaminaBarSlider.value = 1.0f;
 	    defaultspeed = controller.movementSettings.ForwardSpeed;
 	}
