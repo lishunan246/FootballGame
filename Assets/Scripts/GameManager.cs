@@ -63,6 +63,7 @@ public class GameManager : MonoBehaviour
     // setup the game
     public GameObject OnGameUI;
     public GameObject OutGameUI;
+    public GameObject EndGameUI;
     private Vector3 savedVelocity;
     private Vector3 savedAngularVelocity;
 
@@ -70,6 +71,8 @@ public class GameManager : MonoBehaviour
     public GameObject PlayerGoalKeeper;
 
     public float ResumeGameBallDistance = 2.0f;
+    public Text EndGameScoreText;
+    public Text EndGameResultText;
 
     private void Start()
     {
@@ -173,6 +176,10 @@ public class GameManager : MonoBehaviour
                     ResumeGame();
                 break;
             case GameStatus.Over:
+                if (Input.GetKey(KeyCode.Return))
+                {
+                    Application.LoadLevel("Intro");
+                }
                 break;
             case GameStatus.ToStart:
                 break;
@@ -287,21 +294,25 @@ public class GameManager : MonoBehaviour
     {
         // game is over
         status = GameStatus.Over;
+        OnGameUI.SetActive(false);
+        OutGameUI.SetActive(false);
 
+        EndGameScoreText.text = PlayerScore + " : " + ComputerScore;
+        if (PlayerScore > ComputerScore)
+            EndGameResultText.text = "You Win!";
+        else if(PlayerScore < ComputerScore)
+        {
+            EndGameResultText.text = "You Lose!";
+        }
+        else
+        {
+            EndGameResultText.text = "Draw!";
+        }
+        EndGameUI.SetActive(true);
         // repurpose the timer to display a message to the player
         mainTimerDisplay.text = "GAME OVER";
 
-        // activate the gameOverScoreOutline gameObject, if it is set
-        if (gameOverScoreOutline)
-            gameOverScoreOutline.SetActive(true);
 
-        // activate the playAgainButtons gameObject, if it is set
-        if (playAgainButtons)
-            playAgainButtons.SetActive(true);
-
-        // reduce the pitch of the background music, if it is set
-        if (musicAudioSource)
-            musicAudioSource.pitch = 0.5f; // slow down the music
     }
 
     // public function that can be called to restart the game
