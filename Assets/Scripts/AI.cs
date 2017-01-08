@@ -79,7 +79,7 @@ public class AI : MonoBehaviour
 
     private bool ShouldGoal()
     {
-        return DistanceToGoal < ShootDistance ||Mathf.Abs(gameObject.transform.position.y)>45;
+        return DistanceToGoal < ShootDistance ||Mathf.Abs(gameObject.transform.position.y)>40;
     }
 
     private void rotateRigidBodyAroundPointBy(Rigidbody rb, Vector3 origin, Vector3 axis, float angle)
@@ -116,11 +116,12 @@ public class AI : MonoBehaviour
                     else
                     {
                         var t = Vector3.Dot(gameObject.transform.forward, Vector3.right) > 0 ? 1 : -1;
+                        var tt = Side == GameManager.Side.Computer ? 1 : -1;
                         var rb = gameObject.GetComponent<Rigidbody>();
                         rotateRigidBodyAroundPointBy(rb, gameObject.transform.position, Vector3.up,
-                            180 * Time.deltaTime * t);
+                            180 * Time.deltaTime * t*tt);
                         rotateRigidBodyAroundPointBy(_ball.GetComponent<Rigidbody>(), gameObject.transform.position,
-                            Vector3.up, 180 * Time.deltaTime * t);
+                            Vector3.up, 180 * Time.deltaTime * t*tt);
                     }
                 }
                 break;

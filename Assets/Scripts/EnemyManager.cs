@@ -11,6 +11,8 @@ public class EnemyManager : MonoBehaviour
     public GameObject AiPrefab;
     public GameObject Football;
 
+    public float period = 2.0f;
+    private float remain = 2.0f;
     private void Start()
     {
         _aiList = new GameObject[transform.childCount];
@@ -44,6 +46,20 @@ public class EnemyManager : MonoBehaviour
         {
             return;
         }
+        if (remain < 0)
+        {
+            UpdateAIPosition();
+            remain = period;
+        }
+        else
+        {
+            remain -= Time.deltaTime;
+        }
+
+    }
+
+    private void UpdateAIPosition()
+    {
         for (var i = 0; i < _aiList.Length; ++i)
             _distanceToBall[i] = (_aiList[i].transform.position - Football.transform.position).magnitude;
 
@@ -61,10 +77,10 @@ public class EnemyManager : MonoBehaviour
                 GameManager.gm.AI_Active = s.gameObject;
                 s.status = AI.Status.Attack;
             }
-            else if (i ==1)
+            else if (i == 1)
             {
                 Debug.Assert(s != null, "s != null");
-                s.status=AI.Status.Assist;
+                s.status = AI.Status.Assist;
             }
             else
             {
