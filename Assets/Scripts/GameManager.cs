@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     private float currentTime;
     public GameObject Football;
     public GameObject Enemies;
+    public GameObject Teammates;
     public GameObject gameOverScoreOutline;
 
     public Side LastBallTouch;
@@ -188,6 +189,12 @@ public class GameManager : MonoBehaviour
         }
         else if (status == GameStatus.OffBorder)
         {
+            var d = Vector3.zero - _positionOnBorder;
+            var n = _positionOnBorder + d.normalized * ResumeGameBallDistance;
+            n.y = 0.25f;
+            newBallPos = n;
+
+
             var z = _positionOnBorder.z;
             if (Mathf.Abs(z) > 54) //出底线
             {
@@ -200,14 +207,16 @@ public class GameManager : MonoBehaviour
                     }
                     else//门球
                     {
-                        
+                        newBallPos=45*Vector3.forward;
+                        OffBorderTimeLeft = 20;
                     }
                 }
                 else//自己出
                 {
                     if (LastBallTouch == Side.Computer)//门球
                     {
-
+                        newBallPos = -45 * Vector3.forward;
+                        OffBorderTimeLeft = 20;
                     }
                     else//角球
                     {
@@ -215,12 +224,9 @@ public class GameManager : MonoBehaviour
                     }
                 } 
             }
-            var d = Vector3.zero - _positionOnBorder;
-
+           
             
-            var n = _positionOnBorder + d.normalized*ResumeGameBallDistance;
-            n.y = 0.25f;
-            newBallPos = n;
+
             var m = _positionOnBorder - d.normalized * 2;
             m.y = 0;
             newPlayerPos = m;
@@ -249,6 +255,7 @@ public class GameManager : MonoBehaviour
 
         Football.GetComponent<Rigidbody>().Sleep();
         Player.GetComponent<Rigidbody>().Sleep();
+        newPlayerPos.y = 0.25f;
         Football.transform.position = newBallPos;
 
         var lookPos = newPlayerPos - newBallPos;
@@ -261,7 +268,9 @@ public class GameManager : MonoBehaviour
         OffBorderTimeLeft = 3.0f;
         var sc = Enemies.GetComponent("EnemyManager") as EnemyManager;
         sc.ResetPosition();
-        
+        var sc2 = Teammates.GetComponent("EnemyManager") as EnemyManager;
+        sc2.ResetPosition();
+
     }
 
     private void EndGame()
