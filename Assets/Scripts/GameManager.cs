@@ -188,7 +188,36 @@ public class GameManager : MonoBehaviour
         }
         else if (status == GameStatus.OffBorder)
         {
+            var z = _positionOnBorder.z;
+            if (Mathf.Abs(z) > 54) //出底线
+            {
+                if (z > 0)//出对面
+                {
+                    if (LastBallTouch == Side.Computer)//角球
+                    {
+                        _positionOnBorder.x = _positionOnBorder.x > 0 ? 37 : -37;
+
+                    }
+                    else//门球
+                    {
+                        
+                    }
+                }
+                else//自己出
+                {
+                    if (LastBallTouch == Side.Computer)//门球
+                    {
+
+                    }
+                    else//角球
+                    {
+                        _positionOnBorder.x = _positionOnBorder.x > 0 ? 37 : -37;
+                    }
+                } 
+            }
             var d = Vector3.zero - _positionOnBorder;
+
+            
             var n = _positionOnBorder + d.normalized*ResumeGameBallDistance;
             n.y = 0.25f;
             newBallPos = n;
