@@ -135,7 +135,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 			case GoalKeeper_State.MOVE_TO_RESTING:
 
 				capsuleCollider.direction = 1; //Resets the capsule collider to be vertical
-				if (!GetComponent<Animation> ().IsPlaying ("Move_Sideways")) {
+			if (!GetComponent<Animation> ().IsPlaying ("tiro")&&!GetComponent<Animation> ().IsPlaying ("Move_Sideways")) {
 					GetComponent<Animation> ().Play ("Move_Sideways");
 				}
 				if (player) {
@@ -172,7 +172,26 @@ public class GoalKeeper_Script : MonoBehaviour {
 					//come back to thus
 					} 
 				break;
+		case GoalKeeper_State.KICK_BALL:
 
+			GameObject ball = GameObject.FindWithTag ("Football");
+			Vector3 pos = ball.transform.position;
+			Vector3 forward = gameObject.transform.forward;
+			forward [1] = 0.3f;
+			float dist = Vector3.Distance (transform.position, pos);
+			if (dist < 1.0f) {
+				if (!GetComponent<Animation> ().IsPlaying ("tiro")) {
+					GetComponent<Animation> ().Play ("tiro");
+				}
+				state = GoalKeeper_State.MOVE_TO_RESTING;
+				ball.GetComponent<Rigidbody> ().AddForce (forward*4,ForceMode.Impulse);
+			}
+			transform.position = Vector3.MoveTowards (transform.position, pos, 2.0f * Time.deltaTime);
+			if (!GetComponent<Animation> ().IsPlaying ("correr_balon")) {
+				GetComponent<Animation> ().Play ("correr_balon");
+			}
+
+			break;
 			}
 	}
 
