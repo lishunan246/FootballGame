@@ -209,12 +209,14 @@ public class GameManager : MonoBehaviour
             if (Mathf.Abs(z) > 54) //出底线
                 if (z > 0) //出对面
                 {
+
                     LastBallTouch = Side.Player; //角球
 
 
                     newBallPos = 45 * Vector3.forward;
                     var t = ComGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
                     t.state = GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
+
                 }
                 else //自己出
                 {
@@ -268,7 +270,10 @@ public class GameManager : MonoBehaviour
         var sc = Enemies.GetComponent("EnemyManager") as EnemyManager;
         sc.ResetPosition();
         var sc2 = Teammates.GetComponent("EnemyManager") as EnemyManager;
-        sc2.ResetPosition();
+
+		if (sc2) {
+			sc2.ResetPosition();
+		}
     }
 
     private void EndGame()

@@ -132,10 +132,11 @@ public class GoalKeeper_Script : MonoBehaviour {
 				 * starting spot which is stored in the initial_Position variable. While doing so he always looks at the 
 				 * player so if the player takes their next shot fast, the goalkeepers is ready to make a save.
 				 */
-			case GoalKeeper_State.MOVE_TO_RESTING:
+		case GoalKeeper_State.MOVE_TO_RESTING:
 
-				capsuleCollider.direction = 1; //Resets the capsule collider to be vertical
-			if (!GetComponent<Animation> ().IsPlaying ("tiro")&&!GetComponent<Animation> ().IsPlaying ("Move_Sideways")) {
+			capsuleCollider.direction = 1; //Resets the capsule collider to be vertical
+			if (!GetComponent<Animation> ().IsPlaying ("tiro")) {
+				if (!GetComponent<Animation> ().IsPlaying ("Move_Sideways")) {
 					GetComponent<Animation> ().Play ("Move_Sideways");
 				}
 				if (player) {
@@ -151,14 +152,42 @@ public class GoalKeeper_Script : MonoBehaviour {
 				{
 					state = GoalKeeper_State.RESTING;
 				}
+			}
+
 				break;
-						
+		case GoalKeeper_State.KICK_BALL:
+
+			GameObject ball = GameObject.FindWithTag ("Football");
+			Vector3 pos = ball.transform.position;
+			Vector3 forward = gameObject.transform.forward;
+			forward [1] = 0.3f;
+			float dist = Vector3.Distance (transform.position, pos);
+//			Debug.Log (string.Format ("Goalkeeper dist:{0}", dist));
+			if (dist < 2.0f) {
+				if (!GetComponent<Animation> ().IsPlaying ("tiro")) {
+					GetComponent<Animation> ().Play ("tiro");
+					Debug.Log (string.Format ("Goalkeeper shoot"));
+				}
+				state = GoalKeeper_State.MOVE_TO_RESTING;
+				ball.GetComponent<Rigidbody> ().AddForce (forward * 40, ForceMode.Impulse);
+				GameManager.gm.status = GameManager.GameStatus.Running;
+			} else {
+				transform.position = Vector3.MoveTowards (transform.position, pos, 2.0f * Time.deltaTime);
+
+				transform.LookAt(new Vector3(ball.transform.position.x, transform.position.y , ball.transform.position.z)); 
+				if (!GetComponent<Animation> ().IsPlaying ("run")) {
+					GetComponent<Animation> ().Play ("run");
+				}
+			}
+
+
+			break;
 				/*THis is the goalkeeper idle state. He faces the player and stays still in this state.
 				 */
 			case GoalKeeper_State.RESTING:
 				
 				capsuleCollider.direction = 1;
-				if (!GetComponent<Animation> ().IsPlaying ("playerIdle"))
+			if (!GetComponent<Animation> ().IsPlaying ("tiro")&&!GetComponent<Animation> ().IsPlaying ("playerIdle"))
 					GetComponent<Animation> ().Play ("playerIdle");
 				if (player) {
 					transform.LookAt( new Vector3( player.transform.position.x, transform.position.y , player.transform.position.z)  );
@@ -172,26 +201,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 					//come back to thus
 					} 
 				break;
-		case GoalKeeper_State.KICK_BALL:
-
-			GameObject ball = GameObject.FindWithTag ("Football");
-			Vector3 pos = ball.transform.position;
-			Vector3 forward = gameObject.transform.forward;
-			forward [1] = 0.3f;
-			float dist = Vector3.Distance (transform.position, pos);
-			if (dist < 1.0f) {
-				if (!GetComponent<Animation> ().IsPlaying ("tiro")) {
-					GetComponent<Animation> ().Play ("tiro");
-				}
-				state = GoalKeeper_State.MOVE_TO_RESTING;
-				ball.GetComponent<Rigidbody> ().AddForce (forward*4,ForceMode.Impulse);
-			}
-			transform.position = Vector3.MoveTowards (transform.position, pos, 2.0f * Time.deltaTime);
-			if (!GetComponent<Animation> ().IsPlaying ("correr_balon")) {
-				GetComponent<Animation> ().Play ("correr_balon");
-			}
-
-			break;
+		
 			}
 	}
 
