@@ -86,7 +86,7 @@ using UnityStandardAssets.Characters.FirstPerson;
         private CapsuleCollider m_Capsule;
         private float m_YRotation;
         private Vector3 m_GroundContactNormal;
-        private bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
+        public bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
 
 
         public Vector3 Velocity
@@ -252,9 +252,11 @@ using UnityStandardAssets.Characters.FirstPerson;
             }
             else
             {
-                m_IsGrounded = false;
-                m_GroundContactNormal = Vector3.up;
-            }
+//            m_IsGrounded = true;
+//            m_GroundContactNormal = hitInfo.normal;
+                            m_IsGrounded = false;
+                            m_GroundContactNormal = Vector3.up;
+        }
             if (!m_PreviouslyGrounded && m_IsGrounded && m_Jumping)
             {
                 m_Jumping = false;
