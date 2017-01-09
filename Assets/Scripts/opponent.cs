@@ -57,9 +57,15 @@ public class opponent : MonoBehaviour {
 //		}
 
 		state = ai.status;
+      
 
 		float speed = gameObject.GetComponent<Rigidbody> ().velocity.magnitude;
-
+//	    if (speed < 0.01)
+//	    {
+//            if (!GetComponent<Animation>().IsPlaying("Idle"))
+//                GetComponent<Animation>().Play("Idle");
+//	        return;
+//	    }
 		if (!GetComponent<Animation> ().IsPlaying ("tiro") && !GetComponent<Animation> ().IsPlaying ("pass")) {
 			switch (state) {
 			case AI.Status.Idle:
