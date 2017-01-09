@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Debug = System.Diagnostics.Debug;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,12 +24,18 @@ public class GameManager : MonoBehaviour
     // make game manager public static so can access this from other scripts
 
     public static GameManager gm;
+
+    private Vector3 _positionOnBorder = Vector3.zero;
     public GameObject AI_Active;
+
+    public GameObject ComGoalKeeper;
     public int ComputerScore;
     private float currentTime;
-    public GameObject Football;
+    public Text EndGameResultText;
+    public Text EndGameScoreText;
+    public GameObject EndGameUI;
     public GameObject Enemies;
-    public GameObject Teammates;
+    public GameObject Football;
     public GameObject gameOverScoreOutline;
 
     public Side LastBallTouch;
@@ -47,32 +52,26 @@ public class GameManager : MonoBehaviour
 
 
     public float OffBorderTimeLeft = 3.0f;
+    // setup the game
+    public GameObject OnGameUI;
+    public GameObject OutGameUI;
 
     public GameObject playAgainButtons;
     public string playAgainLevelToLoad;
     public GameObject Player;
-
-    public int PlayerScore;
-
-    private Vector3 _positionOnBorder = Vector3.zero;
-    public float startTime = 5.0f;
-    public GameStatus status;
-    public Button ResumeButton;
-    public Button QuitButton;
-    public Button RestartButton;
-    // setup the game
-    public GameObject OnGameUI;
-    public GameObject OutGameUI;
-    public GameObject EndGameUI;
-    private Vector3 savedVelocity;
-    private Vector3 savedAngularVelocity;
-
-    public GameObject ComGoalKeeper;
     public GameObject PlayerGoalKeeper;
 
+    public int PlayerScore;
+    public Button QuitButton;
+    public Button RestartButton;
+    public Button ResumeButton;
+
     public float ResumeGameBallDistance = 2.0f;
-    public Text EndGameScoreText;
-    public Text EndGameResultText;
+    private Vector3 savedAngularVelocity;
+    private Vector3 savedVelocity;
+    public float startTime = 5.0f;
+    public GameStatus status;
+    public GameObject Teammates;
 
     private void Start()
     {
@@ -110,10 +109,10 @@ public class GameManager : MonoBehaviour
         rb.isKinematic = true;
         OnGameUI.SetActive(false);
         OutGameUI.SetActive(true);
-        status=GameStatus.Paused;
+        status = GameStatus.Paused;
     }
 
-    void UnPauseGame()
+    private void UnPauseGame()
     {
         var rb = Football.GetComponent<Rigidbody>();
         rb.isKinematic = false;
@@ -164,9 +163,7 @@ public class GameManager : MonoBehaviour
                     mainTimerDisplay.text = currentTime.ToString("0.00");
                     mainScoreDisplay.text = PlayerScore + ":" + ComputerScore;
                     if (Input.GetKeyDown(KeyCode.Escape))
-                    {
                         PauseGame();
-                    }
                 }
                 break;
             case GameStatus.OffBorder:
@@ -177,9 +174,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameStatus.Over:
                 if (Input.GetKey(KeyCode.Return))
-                {
                     Application.LoadLevel("Intro");
-                }
                 break;
             case GameStatus.ToStart:
                 break;
@@ -212,37 +207,24 @@ public class GameManager : MonoBehaviour
 
             var z = _positionOnBorder.z;
             if (Mathf.Abs(z) > 54) //出底线
-            {
-                if (z > 0)//出对面
+                if (z > 0) //出对面
                 {
-                    if (LastBallTouch == Side.Computer)//角球
-                    {
-                        _positionOnBorder.x = _positionOnBorder.x > 0 ? 37 : -37;
+                    LastBallTouch = Side.Player; //角球
 
-                    }
-                    else//门球
-                    {
-                        newBallPos=45*Vector3.forward;
-                        var t = ComGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
-                        t.state = GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
-                    }
+
+                    newBallPos = 45 * Vector3.forward;
+                    var t = ComGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
+                    t.state = GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
                 }
-                else//自己出
+                else //自己出
                 {
-                    if (LastBallTouch == Side.Computer)//门球
-                    {
-                        newBallPos = -45 * Vector3.forward;
-                        var t = PlayerGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
-                        t.state=GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
-                    }
-                    else//角球
-                    {
-                        _positionOnBorder.x = _positionOnBorder.x > 0 ? 37 : -37;
-                    }
-                } 
-            }
-           
-            
+                    LastBallTouch = Side.Computer;//门球
+
+                    newBallPos = -45 * Vector3.forward;
+                    var t = PlayerGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
+                    t.state = GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
+                }
+
 
             var m = _positionOnBorder - d.normalized * 2;
             m.y = 0;
@@ -287,7 +269,6 @@ public class GameManager : MonoBehaviour
         sc.ResetPosition();
         var sc2 = Teammates.GetComponent("EnemyManager") as EnemyManager;
         sc2.ResetPosition();
-
     }
 
     private void EndGame()
@@ -300,19 +281,13 @@ public class GameManager : MonoBehaviour
         EndGameScoreText.text = PlayerScore + " : " + ComputerScore;
         if (PlayerScore > ComputerScore)
             EndGameResultText.text = "You Win!";
-        else if(PlayerScore < ComputerScore)
-        {
+        else if (PlayerScore < ComputerScore)
             EndGameResultText.text = "You Lose!";
-        }
         else
-        {
             EndGameResultText.text = "Draw!";
-        }
         EndGameUI.SetActive(true);
         // repurpose the timer to display a message to the player
         mainTimerDisplay.text = "GAME OVER";
-
-
     }
 
     // public function that can be called to restart the game
