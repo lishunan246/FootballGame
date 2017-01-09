@@ -223,8 +223,10 @@ public class GameManager : MonoBehaviour
                     else//门球
                     {
                         newBallPos=45*Vector3.forward;
-                        var t = ComGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
-                        t.state = GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
+//                        var t = ComGoalKeeper.GetComponent("GoalKeeper_Script") as GoalKeeper_Script;
+//                        t.state = GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
+//						t.name = "haha";
+						ComGoalKeeper.GetComponent<GoalKeeper_Script>().state = GoalKeeper_Script.GoalKeeper_State.KICK_BALL;
                     }
                 }
                 else//自己出
@@ -286,7 +288,10 @@ public class GameManager : MonoBehaviour
         var sc = Enemies.GetComponent("EnemyManager") as EnemyManager;
         sc.ResetPosition();
         var sc2 = Teammates.GetComponent("EnemyManager") as EnemyManager;
-        sc2.ResetPosition();
+		if (sc2) {
+			sc2.ResetPosition();
+		}
+        
 
     }
 
