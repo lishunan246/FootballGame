@@ -162,7 +162,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 			Vector3 forward = gameObject.transform.forward;
 			forward [1] = 0.3f;
 			float dist = Vector3.Distance (transform.position, pos);
-			Debug.Log (string.Format ("Goalkeeper dist:{0}", dist));
+//			Debug.Log (string.Format ("Goalkeeper dist:{0}", dist));
 			if (dist < 2.0f) {
 				if (!GetComponent<Animation> ().IsPlaying ("tiro")) {
 					GetComponent<Animation> ().Play ("tiro");
@@ -170,6 +170,7 @@ public class GoalKeeper_Script : MonoBehaviour {
 				}
 				state = GoalKeeper_State.MOVE_TO_RESTING;
 				ball.GetComponent<Rigidbody> ().AddForce (forward * 40, ForceMode.Impulse);
+				GameManager.gm.status = GameManager.GameStatus.Running;
 			} else {
 				transform.position = Vector3.MoveTowards (transform.position, pos, 2.0f * Time.deltaTime);
 
