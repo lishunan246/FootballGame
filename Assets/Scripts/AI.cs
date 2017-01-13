@@ -169,7 +169,7 @@ public class AI : MonoBehaviour
         CurrentSpeed = status != Status.Idle ? ActiveSpeed : NonActiveSpeed;
         if (GameManager.gm.status == GameManager.GameStatus.Wait &&
             (gameObject != GameManager.gm.AI_Active || Side == GameManager.gm.LastBallTouch))
-            if (status != Status.Idle || status != Status.Return)
+            if (!(status == Status.Idle || status == Status.Return))
                 status = Status.Return;
     }
 
